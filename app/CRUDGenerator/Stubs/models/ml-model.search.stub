@@ -1,0 +1,40 @@
+<?php
+
+namespace {{ ROOT_NAMESPACE }}Models\{{ CLASS_NAME }};
+
+use {{ ROOT_NAMESPACE }}Models\Base\Search;
+use Illuminate\Database\Eloquent\Builder;
+
+class {{ CLASS_NAME }}Search extends Search
+{
+    protected array $orderables = [
+        'id',
+        'name'
+    ];
+
+    protected function query(): Builder
+    {
+        $filters = $this->filters;
+
+        return {{ CLASS_NAME }}::select([
+            'id',
+            'name',
+            'title'
+        ])
+            ->joinMl()
+            ->when(!empty($filters['search']), function ($query) use ($filters) {
+                $query->likeOr(['id', 'name'], $filters);
+            })
+            ->when(!empty($filters['id']), function ($query) use ($filters) {
+                $query->where('id', $filters['id']);
+            })
+            ->when(!empty($filters['name']), function ($query) use ($filters) {
+                $query->like('name', $filters['name']);
+            });
+    }
+
+    public function totalCount(): int
+    {
+        return {{ CLASS_NAME }}::count();
+    }
+}

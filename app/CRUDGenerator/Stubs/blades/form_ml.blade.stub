@@ -1,0 +1,44 @@
+<x-dashboard.layouts.app>
+    <div class="container-fluid">
+        <div class="card mb-4">
+            <x-dashboard.form._form_ml
+                :action="$viewMode === 'add' ? route('dashboard.{{ ROUTE_NAME }}.store') : route('dashboard.{{ ROUTE_NAME }}.update', ${{ VARIABLE_NAME }}->id)"
+                :method="$viewMode === 'add' ? 'post' : 'put'"
+                :indexUrl="route('dashboard.{{ ROUTE_NAME }}.index')"
+                :viewMode="$viewMode"
+
+                :mlData="${{ VARIABLE_NAME }}Ml ?? []"
+            >
+
+               {{-- General Data --}}
+               <x-slot:generalTabData>
+                   <div class="row">
+                       <div class="col-lg-6">
+                            <div class="form-group required">
+                                 <x-dashboard.form._input name="name" :value="${{ VARIABLE_NAME }}->name"/>
+                            </div>
+                       </div>
+                   </div>
+               </x-slot:generalTabData>
+
+               {{-- ML Data --}}
+               <x-slot:mlTabsData>
+                    <div class="row">
+                       <div class="col-lg-6">
+                            <div class="form-group">
+                               <x-dashboard.form._input name="title"/>
+                            </div>
+                       </div>
+                    </div>
+               </x-slot:mlTabsData>
+
+            </x-dashboard.form._form_ml>
+        </div>
+    </div>
+
+    <x-slot name="scripts">
+        <script src="{{ asset('/js/dashboard/{{ CLASS_NAME }}/main.js') }}"></script>
+    </x-slot>
+</x-dashboard.layouts.app>
+
+

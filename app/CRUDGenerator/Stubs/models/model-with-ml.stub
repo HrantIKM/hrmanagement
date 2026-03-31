@@ -1,0 +1,18 @@
+<?php
+
+namespace {{ ROOT_NAMESPACE }}Models\{{ CLASS_NAME }};
+
+use {{ ROOT_NAMESPACE }}Models\Base\BaseModel;
+use App\Models\Base\Traits\HasMlData;
+
+class {{ CLASS_NAME }} extends BaseModel
+{
+    use HasMlData;
+
+    /**
+     * @var string[]
+     */
+    protected $fillable = [
+        'name'
+    ];
+}

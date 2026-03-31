@@ -1,0 +1,16 @@
+const options = {
+  pathOptions: {
+    searchPath: route('dashboard.{{ ROUTE_NAME }}.getListData'),
+    deletePath: route('dashboard.{{ ROUTE_NAME }}.destroy', ':id'),
+    editPath: route('dashboard.{{ ROUTE_NAME }}.edit', ':id'),
+    showPath: route('dashboard.{{ ROUTE_NAME }}.show', ':id'),
+  },
+
+  relations: {},
+
+  actions: {
+      show: false,
+  },
+};
+// eslint-disable-next-line no-new,no-undef
+new DataTable(options);

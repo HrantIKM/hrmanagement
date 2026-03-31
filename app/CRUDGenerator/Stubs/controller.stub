@@ -1,0 +1,103 @@
+<?php
+
+namespace App\Http\Controllers\Dashboard;
+
+use App\Http\Requests\{{ CLASS_NAME }}\{{ CLASS_NAME }}Request;
+use App\Http\Requests\{{ CLASS_NAME }}\{{ CLASS_NAME }}SearchRequest;
+use App\Models\{{ CLASS_NAME }}\{{ CLASS_NAME }}Search;
+use App\Models\{{ CLASS_NAME }}\{{ CLASS_NAME }};
+use App\Services\{{ CLASS_NAME }}\{{ CLASS_NAME }}Service;
+use App\Contracts\{{ CLASS_NAME }}\I{{ CLASS_NAME }}Repository;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\View\View;
+
+class {{ CLASS_NAME }}Controller extends BaseController
+{
+    public function __construct(
+        {{ CLASS_NAME }}Service $service,
+        I{{ CLASS_NAME }}Repository $repository
+    ) {
+        $this->service = $service;
+        $this->repository = $repository;
+    }
+
+    public function index(): View
+    {
+        return $this->dashboardView('{{ FOLDER_NAME }}.index');
+    }
+
+    public function getListData({{ CLASS_NAME }}SearchRequest $request): array
+    {
+        $searcher = new {{ CLASS_NAME }}Search($request->validated());
+
+        return [
+            'recordsTotal' => $searcher->totalCount(),
+            'recordsFiltered' => $searcher->filteredCount(),
+            'data' => $searcher->search(),
+        ];
+    }
+
+    public function create(): View
+    {
+        return $this->dashboardView(
+            view: '{{ FOLDER_NAME }}.form',
+            vars: $this->service->getViewData()
+        );
+    }
+
+    public function store({{ CLASS_NAME }}Request $request): JsonResponse
+    {
+        // For storing relations, sending emails, ...etc(extra functionality) use service
+        // $this->service->createOrUpdate($request->validated());
+        $this->repository->create($request->validated());
+
+        return $this->sendOkCreated([
+            'redirectUrl' => route('dashboard.{{ PLURAL_CLASS_NAME_WITH_DELIMITER }}.index')
+        ]);
+    }
+
+    public function show({{ CLASS_NAME }} ${{ LOWER_CLASS_NAME }}): View
+    {
+       /* return $this->dashboardView(
+           view: '{{ FOLDER_NAME }}.form',
+           vars: $this->service->getViewData(${{ LOWER_CLASS_NAME }}->id),
+           viewMode: 'show'
+       );*/
+    }
+
+    public function edit({{ CLASS_NAME }} ${{ LOWER_CLASS_NAME }}): View
+    {
+        // For getting other info except current model use service
+        /* return $this->dashboardView(
+            view: '{{ FOLDER_NAME }}.form',
+            vars: $this->service->getViewData(${{ LOWER_CLASS_NAME }}->id),
+            viewMode: 'edit'
+        );*/
+
+        return $this->dashboardView(
+            view: '{{ FOLDER_NAME }}.form',
+            vars: ['{{ CAMEL_CASE_CLASS_NAME }}' => ${{ LOWER_CLASS_NAME }}],
+            viewMode: 'edit'
+        );
+    }
+
+    public function update({{ CLASS_NAME }}Request $request, {{ CLASS_NAME }} ${{ LOWER_CLASS_NAME }}): JsonResponse
+    {
+        // For updating relations, sending emails, ...etc(extra functionality) use service
+        // $this->service->createOrUpdate($request->validated(), ${{ LOWER_CLASS_NAME }}->id);
+        $this->repository->update(${{ LOWER_CLASS_NAME }}->id, $request->validated());
+
+        return $this->sendOkUpdated([
+            'redirectUrl' => route('dashboard.{{ PLURAL_CLASS_NAME_WITH_DELIMITER }}.index')
+        ]);
+    }
+
+    public function destroy({{ CLASS_NAME }} ${{ LOWER_CLASS_NAME }}): JsonResponse
+    {
+        // If deleting other data except model use service
+        // $this->service->delete(${{ LOWER_CLASS_NAME }}->id);
+        $this->repository->destroy(${{ LOWER_CLASS_NAME }}->id);
+
+        return $this->sendOkDeleted();
+    }
+}

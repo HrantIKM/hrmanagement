@@ -1,0 +1,7 @@
+<?php
+
+namespace {{ ROOT_NAMESPACE }}Contracts\{{ CLASS_NAME }};
+
+interface I{{ CLASS_NAME }}Repository
+{
+}

@@ -1,0 +1,87 @@
+<?php
+
+namespace App\Http\Controllers\Dashboard;
+
+use App\Http\Requests\{{ CLASS_NAME }}\{{ CLASS_NAME }}Request;
+use App\Http\Requests\{{ CLASS_NAME }}\{{ CLASS_NAME }}SearchRequest;
+use App\Models\{{ CLASS_NAME }}\{{ CLASS_NAME }}Search;
+use App\Models\{{ CLASS_NAME }}\{{ CLASS_NAME }};
+use App\Services\{{ CLASS_NAME }}\{{ CLASS_NAME }}Service;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\View\View;
+
+class {{ CLASS_NAME }}Controller extends BaseController
+{
+    public function __construct(
+        {{ CLASS_NAME }}Service $service,
+    ) {
+        $this->service = $service;
+    }
+
+    public function index(): View
+    {
+        return $this->dashboardView('{{ FOLDER_NAME }}.index');
+    }
+
+    public function getListData({{ CLASS_NAME }}SearchRequest $request): array
+    {
+        $searcher = new {{ CLASS_NAME }}Search($request->validated());
+
+        return [
+            'recordsTotal' => $searcher->totalCount(),
+            'recordsFiltered' => $searcher->filteredCount(),
+            'data' => $searcher->search(),
+        ];
+    }
+
+    public function create(): View
+    {
+        return $this->dashboardView(
+            view: '{{ FOLDER_NAME }}.form',
+            vars: $this->service->getViewData()
+        );
+    }
+
+    public function store({{ CLASS_NAME }}Request $request): JsonResponse
+    {
+        $this->service->createOrUpdate($request->validated());
+
+        return $this->sendOkCreated([
+            'redirectUrl' => route('dashboard.{{ PLURAL_CLASS_NAME_WITH_DELIMITER }}.index')
+        ]);
+    }
+
+    public function show({{ CLASS_NAME }} ${{ LOWER_CLASS_NAME }}): View
+    {
+       /* return $this->dashboardView(
+           view: '{{ FOLDER_NAME }}.form',
+           vars: $this->service->getViewData(${{ LOWER_CLASS_NAME }}->id),
+           viewMode: 'show'
+       );*/
+    }
+
+    public function edit({{ CLASS_NAME }} ${{ LOWER_CLASS_NAME }}): View
+    {
+        return $this->dashboardView(
+            view: '{{ FOLDER_NAME }}.form',
+            vars: $this->service->getViewData(${{ LOWER_CLASS_NAME }}->id),
+            viewMode: 'edit'
+        );
+    }
+
+    public function update({{ CLASS_NAME }}Request $request, {{ CLASS_NAME }} ${{ LOWER_CLASS_NAME }}): JsonResponse
+    {
+        $this->service->createOrUpdate($request->validated(), ${{ LOWER_CLASS_NAME }}->id);
+
+        return $this->sendOkUpdated([
+            'redirectUrl' => route('dashboard.{{ PLURAL_CLASS_NAME_WITH_DELIMITER }}.index')
+        ]);
+    }
+
+    public function destroy({{ CLASS_NAME }} ${{ LOWER_CLASS_NAME }}): JsonResponse
+    {
+        $this->service->delete(${{ LOWER_CLASS_NAME }}->id);
+
+        return $this->sendOkDeleted();
+    }
+}

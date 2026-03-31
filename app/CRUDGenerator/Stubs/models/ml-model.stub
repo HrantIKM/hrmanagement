@@ -1,0 +1,34 @@
+<?php
+
+namespace {{ ROOT_NAMESPACE }}Models\{{ CLASS_NAME }};
+
+use {{ ROOT_NAMESPACE }}Models\Base\BaseMlModel;
+use {{ ROOT_NAMESPACE }}Traits\Models\HasCompositePrimaryKey;
+
+class {{ CLASS_NAME }}Mls extends BaseMlModel
+{
+    use HasCompositePrimaryKey;
+
+    /**
+     * @var string[]
+     */
+    protected $primaryKey = ['{{ VARIABLE_NAME }}_id', 'lng_code'];
+
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
+     * @var string[]
+     */
+    protected $fillable = [
+        'title',
+        'lng_code',
+    ];
+}

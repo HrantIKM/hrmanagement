@@ -1,0 +1,15 @@
+<?php
+
+namespace {{ ROOT_NAMESPACE }}Models\{{ CLASS_NAME }};
+
+use {{ ROOT_NAMESPACE }}Models\Base\BaseModel;
+
+class {{ CLASS_NAME }} extends BaseModel
+{
+    /**
+     * @var string[]
+     */
+    protected $fillable = [
+        'name'
+    ];
+}

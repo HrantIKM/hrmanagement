@@ -1,0 +1,15 @@
+<?php
+
+namespace {{ ROOT_NAMESPACE }}Services\{{ CLASS_NAME }};
+
+use {{ ROOT_NAMESPACE }}Contracts\{{ CLASS_NAME }}\I{{ CLASS_NAME }}Repository;
+use {{ ROOT_NAMESPACE }}Services\BaseService;
+
+class {{ CLASS_NAME }}Service extends BaseService
+{
+    public function __construct(
+        I{{ CLASS_NAME }}Repository $repository
+    ) {
+        $this->repository = $repository;
+    }
+}

@@ -1,0 +1,19 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    level: 6
+
+    ignoreErrors:
+            - '#Access to an undefined property#'
+            - '#Call to an undefined method#'
+            - '#Property .* does not accept#'
+            - '#Method .* return type has no value type specified in iterable type array.#'
+            - '#Method .* has parameter .* with no value type specified in iterable type array.#'
+            - '#Method .* return type with generic class .* does not specify its types: .*#'
+            - '#Property .* type has no value type specified in iterable type array.#'
+            - '#Method .* has parameter .* with generic class .* but does not specify its types: .*#'
+            - '#Class .* implements generic interface .* but does not specify its types: .*#'
+            - '#Function .* return type has no value type specified in iterable type array.#'
+            - '#Function .* has parameter .* with no value type specified in iterable type array.#'
+            - '#PHPDoc type .* of property .* is not covariant with PHPDoc type .* of overridden property .*.#'

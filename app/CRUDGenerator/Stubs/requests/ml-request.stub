@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Http\Requests\{{ CLASS_NAME }};
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class {{ CLASS_NAME }}Request extends FormRequest
+{
+    public function rules(): array
+    {
+        return [
+            'name' => 'required|string_with_max',
+
+            'ml' => 'nullable|array',
+            'ml.*.title' => 'nullable|string_with_max',
+        ];
+    }
+}
