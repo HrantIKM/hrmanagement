@@ -1,10 +1,28 @@
 <?php
 
 use App\Models\Article\Article;
+use App\Models\Department\Department;
 use App\Models\File\Enums\FileType;
+use App\Models\Project\Project;
 use App\Models\User\User;
 
 return [
+    Project::getClassName() => [
+        'icon' => [
+            'field_name' => 'icon',
+            'file_type' => FileType::IMAGE,
+            'validation' => 'nullable|mimes:jpg,jpeg,png,bmp,tiff,webp,svg|max:4096',
+        ],
+    ],
+
+    Department::getClassName() => [
+        'icon' => [
+            'field_name' => 'icon',
+            'file_type' => FileType::IMAGE,
+            'validation' => 'nullable|mimes:jpg,jpeg,png,bmp,tiff,webp,svg|max:4096',
+        ],
+    ],
+
     User::getClassName() => [
         'signature' => [
             'field_name' => 'signature',

@@ -8,6 +8,9 @@ const options = {
 
   relations: {
     roles: 'name',
+    department: 'name',
+    position: 'title',
+    skills: 'name',
   },
 
   actions: {

@@ -17,7 +17,7 @@
                     <span class="menu-text">{{ __('menu.'.$menu->slug) }}</span>
                     <i class="menu-arrow"></i>
                 </a>
-                <div class="collapse {{$hasActiveSubMenu ? 'show' : ''}}" data-parent="#menu-nav" id="collapseMenu_{{$menu->id}}">
+                <div class="collapse {{$hasActiveSubMenu ? 'show' : ''}}" data-bs-parent="#menu-nav" id="collapseMenu_{{$menu->id}}">
                     <ul class="menu-nav">
                         @foreach($menu->subMenu as $subMenu)
                             <li class="menu-item">

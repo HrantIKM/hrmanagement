@@ -18,6 +18,128 @@ return [
         ],
     ],
 
+    'department' => [
+        'form' => [
+            'add' => [
+                'title' => 'Create Department',
+                'description' => '',
+            ],
+            'edit' => [
+                'title' => 'Edit Department',
+                'description' => '',
+            ],
+            'show' => [
+                'title' => 'Department',
+                'description' => '',
+            ],
+        ],
+
+        'index' => [
+            'title' => 'Departments',
+            'create' => 'Create Department',
+            'description' => '',
+        ],
+    ],
+
+    'position' => [
+        'form' => [
+            'add' => ['title' => 'Create Position', 'description' => ''],
+            'edit' => ['title' => 'Edit Position', 'description' => ''],
+            'show' => ['title' => 'Position', 'description' => ''],
+        ],
+        'index' => ['title' => 'Positions', 'create' => 'Create Position', 'description' => ''],
+    ],
+
+    'skill' => [
+        'form' => [
+            'add' => ['title' => 'Create Skill', 'description' => ''],
+            'edit' => ['title' => 'Edit Skill', 'description' => ''],
+            'show' => ['title' => 'Skill', 'description' => ''],
+        ],
+        'index' => ['title' => 'Skills', 'create' => 'Create Skill', 'description' => ''],
+    ],
+
+    'vacancy' => [
+        'form' => [
+            'add' => ['title' => 'Create Vacancy', 'description' => ''],
+            'edit' => ['title' => 'Edit Vacancy', 'description' => ''],
+            'show' => ['title' => 'Vacancy', 'description' => ''],
+        ],
+        'index' => ['title' => 'Vacancies', 'create' => 'Create Vacancy', 'description' => ''],
+    ],
+
+    'candidate' => [
+        'form' => [
+            'add' => ['title' => 'Create Candidate', 'description' => ''],
+            'edit' => ['title' => 'Edit Candidate', 'description' => ''],
+            'show' => ['title' => 'Candidate', 'description' => ''],
+        ],
+        'index' => ['title' => 'Candidates', 'create' => 'Create Candidate', 'description' => ''],
+    ],
+
+    'project' => [
+        'form' => [
+            'add' => ['title' => 'Create Project', 'description' => ''],
+            'edit' => ['title' => 'Edit Project', 'description' => ''],
+            'show' => ['title' => 'Project', 'description' => ''],
+        ],
+        'index' => ['title' => 'Projects', 'create' => 'Create Project', 'description' => ''],
+    ],
+
+    'task' => [
+        'form' => [
+            'add' => ['title' => 'Create Task', 'description' => ''],
+            'edit' => ['title' => 'Edit Task', 'description' => ''],
+            'show' => ['title' => 'Task', 'description' => ''],
+        ],
+        'index' => ['title' => 'Tasks', 'create' => 'Create Task', 'description' => ''],
+    ],
+
+    'timesheet' => [
+        'form' => [
+            'add' => ['title' => 'Create Timesheet', 'description' => ''],
+            'edit' => ['title' => 'Edit Timesheet', 'description' => ''],
+            'show' => ['title' => 'Timesheet', 'description' => ''],
+        ],
+        'index' => ['title' => 'Timesheets', 'create' => 'Create Timesheet', 'description' => ''],
+    ],
+
+    'goal' => [
+        'form' => [
+            'add' => ['title' => 'Create Goal', 'description' => ''],
+            'edit' => ['title' => 'Edit Goal', 'description' => ''],
+            'show' => ['title' => 'Goal', 'description' => ''],
+        ],
+        'index' => ['title' => 'Goals', 'create' => 'Create Goal', 'description' => ''],
+    ],
+
+    'review' => [
+        'form' => [
+            'add' => ['title' => 'Create Review', 'description' => ''],
+            'edit' => ['title' => 'Edit Review', 'description' => ''],
+            'show' => ['title' => 'Review', 'description' => ''],
+        ],
+        'index' => ['title' => 'Reviews', 'create' => 'Create Review', 'description' => ''],
+    ],
+
+    'salary' => [
+        'form' => [
+            'add' => ['title' => 'Create Salary', 'description' => ''],
+            'edit' => ['title' => 'Edit Salary', 'description' => ''],
+            'show' => ['title' => 'Salary', 'description' => ''],
+        ],
+        'index' => ['title' => 'Salaries', 'create' => 'Create Salary', 'description' => ''],
+    ],
+
+    'payslip' => [
+        'form' => [
+            'add' => ['title' => 'Create Payslip', 'description' => ''],
+            'edit' => ['title' => 'Edit Payslip', 'description' => ''],
+            'show' => ['title' => 'Payslip', 'description' => ''],
+        ],
+        'index' => ['title' => 'Payslips', 'create' => 'Create Payslip', 'description' => ''],
+    ],
+
     'article' => [
         'form' => [
             'edit' => [

@@ -12,6 +12,9 @@ class UserSearch extends Search
         'first_name',
         'last_name',
         'email',
+        'salary',
+        'hire_date',
+        'employment_status',
         'created_at',
     ];
 
@@ -19,11 +22,16 @@ class UserSearch extends Search
     {
         $filters = $this->filters;
 
-        return User::with('roles')->select([
+        return User::with(['roles', 'department', 'position', 'skills'])->select([
             'id',
             'first_name',
             'last_name',
             'email',
+            'department_id',
+            'position_id',
+            'salary',
+            'hire_date',
+            'employment_status',
             'created_at',
         ])
             ->when(!empty($filters['search']), function ($query) use ($filters) {
@@ -40,6 +48,9 @@ class UserSearch extends Search
             })
             ->when(!empty($filters['email']), function ($query) use ($filters) {
                 $query->like('email', $filters['email']);
+            })
+            ->when(!empty($filters['employment_status']), function ($query) use ($filters) {
+                $query->where('employment_status', $filters['employment_status']);
             })
             ->when(!empty($filters['created_at']), function ($query) use ($filters) {
                 $query->orderBy('created_at', $filters['created_at']);

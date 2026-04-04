@@ -1,3 +1,6 @@
+@php
+    use App\Models\User\Enums\EmploymentStatus;
+@endphp
 <x-dashboard.layouts.app>
     <x-slot name="head">
         <link rel="stylesheet" href="{{ asset('/plugins/croppie/croppie.min.css') }}" />
@@ -49,8 +52,41 @@
                                                       multiple class="select2"/>
                         </div>
 
+                        <div class="form-group">
+                            <x-dashboard.form._select name="department_id" allowClear defaultOption
+                                                      :data="$departments" :value="$user->department_id" class="select2"/>
+                        </div>
+
+                        <div class="form-group">
+                            <x-dashboard.form._select name="position_id" allowClear defaultOption
+                                                      :data="$positions" :value="$user->position_id" class="select2"/>
+                        </div>
+
+                        <div class="form-group required">
+                            <x-dashboard.form._select name="employment_status" :data="$employmentStatusOptions"
+                                                      :value="$user->employment_status ?? EmploymentStatus::ACTIVE" class="select2"/>
+                        </div>
+
+                        <div class="form-group">
+                            <x-dashboard.form._select name="skill_ids[]" :data="$skills" :value="$userSkillIds ?? ''"
+                                                      multiple class="select2" allowClear/>
+                        </div>
+
                         <div class="form-group required">
                             <x-dashboard.form._input name="password_confirmation" type="password"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <x-dashboard.form._input name="salary" type="number" decimal :value="$user->salary"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <x-dashboard.form._input name="hire_date" type="date" :value="$user->hire_date?->format('Y-m-d')"/>
                         </div>
                     </div>
                 </div>

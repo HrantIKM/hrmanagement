@@ -12,6 +12,7 @@ class UserSearchRequest extends DatatableSearchRequest
             'f.first_name' => 'nullable|string_with_max',
             'f.last_name' => 'nullable|string_with_max',
             'f.email' => 'nullable|string_with_max',
+            'f.employment_status' => 'nullable|string_with_max',
         ];
     }
 }

@@ -3,13 +3,37 @@
 namespace App\Providers;
 
 use App\Contracts\Article\IArticleRepository;
+use App\Contracts\Candidate\ICandidateRepository;
+use App\Contracts\Department\IDepartmentRepository;
 use App\Contracts\File\IFileRepository;
+use App\Contracts\Goal\IGoalRepository;
+use App\Contracts\Payslip\IPayslipRepository;
+use App\Contracts\Position\IPositionRepository;
+use App\Contracts\Project\IProjectRepository;
+use App\Contracts\Review\IReviewRepository;
 use App\Contracts\Role\IRoleRepository;
+use App\Contracts\Salary\ISalaryRepository;
+use App\Contracts\Skill\ISkillRepository;
+use App\Contracts\Task\ITaskRepository;
+use App\Contracts\Timesheet\ITimesheetRepository;
 use App\Contracts\User\IUserRepository;
+use App\Contracts\Vacancy\IVacancyRepository;
 use App\Repositories\Article\ArticleRepository;
+use App\Repositories\Candidate\CandidateRepository;
+use App\Repositories\Department\DepartmentRepository;
 use App\Repositories\File\FileRepository;
+use App\Repositories\Goal\GoalRepository;
+use App\Repositories\Payslip\PayslipRepository;
+use App\Repositories\Position\PositionRepository;
+use App\Repositories\Project\ProjectRepository;
+use App\Repositories\Review\ReviewRepository;
 use App\Repositories\Role\RoleRepository;
+use App\Repositories\Salary\SalaryRepository;
+use App\Repositories\Skill\SkillRepository;
+use App\Repositories\Task\TaskRepository;
+use App\Repositories\Timesheet\TimesheetRepository;
 use App\Repositories\User\UserRepository;
+use App\Repositories\Vacancy\VacancyRepository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -22,6 +46,18 @@ class RepositoryServiceProvider extends ServiceProvider
         IRoleRepository::class => RoleRepository::class,
         IFileRepository::class => FileRepository::class,
         IArticleRepository::class => ArticleRepository::class,
+        IDepartmentRepository::class => DepartmentRepository::class,
+        IPositionRepository::class => PositionRepository::class,
+        ISkillRepository::class => SkillRepository::class,
+        IVacancyRepository::class => VacancyRepository::class,
+        ICandidateRepository::class => CandidateRepository::class,
+        IProjectRepository::class => ProjectRepository::class,
+        ITaskRepository::class => TaskRepository::class,
+        ITimesheetRepository::class => TimesheetRepository::class,
+        IGoalRepository::class => GoalRepository::class,
+        IReviewRepository::class => ReviewRepository::class,
+        ISalaryRepository::class => SalaryRepository::class,
+        IPayslipRepository::class => PayslipRepository::class,
     ];
 
     /**

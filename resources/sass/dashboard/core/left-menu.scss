@@ -150,7 +150,7 @@ $menu-icon-hover-color: #3699FF;
             }
         }
 
-        > .menu-link{
+            > .menu-link{
             display: flex;
             flex-grow: 1;
             align-items: center;
@@ -162,6 +162,10 @@ $menu-icon-hover-color: #3699FF;
             font-size: 14px;
             min-height: 44px;
             color: #fff;
+
+            &[data-bs-toggle="collapse"] {
+                cursor: pointer;
+            }
 
             &[aria-expanded=true], &.active{
                 background-color: #2f3a70;
@@ -362,12 +366,29 @@ $menu-icon-hover-color: #3699FF;
     min-width: 10px;
     width: auto;
 }
-#simple-bar{
+#simple-bar {
     height: calc(100vh - 65px);
     width: 265px;
-    scrollbar-width: none;
-    -ms-overflow-style: -ms-autohiding-scrollbar;
-    scrollbar-color: transparent transparent;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    /* `auto` keeps OS scrollbar arrows where the browser still draws them (e.g. Firefox on Windows). */
+    scrollbar-width: auto;
+    scrollbar-color: #637099 #1e1e2d;
+
+    @media (max-width: 1199px) {
+        height: calc(100vh - 50px);
+    }
+}
+
+#simple-bar::-webkit-scrollbar {
+    width: 8px;
+}
+
+#simple-bar::-webkit-scrollbar-thumb {
+    background: #637099;
+    border-radius: 4px;
 }
 
 

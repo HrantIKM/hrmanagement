@@ -12,4 +12,13 @@ trait UserAccessors
             get: fn() => $this->first_name . ' ' . $this->last_name
         );
     }
+
+    public function employmentStatusDisplay(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->employment_status
+                ? __('user.employment_status.' . $this->employment_status)
+                : ''
+        );
+    }
 }

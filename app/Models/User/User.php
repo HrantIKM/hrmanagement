@@ -4,6 +4,7 @@ namespace App\Models\User;
 
 use App\Casts\DateCast;
 use App\Models\Base\Traits\HasFileData;
+use App\Models\User\Enums\EmploymentStatus;
 use App\Models\Base\Traits\ModelHelperFunctions;
 use App\Models\File\File;
 use App\Models\User\Traits\UserAccessors;
@@ -18,6 +19,13 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
+    /**
+     * @var string[]
+     */
+    protected $appends = [
+        'employment_status_display',
+    ];
+
     use HasApiTokens;
     use HasFileData;
     use HasRoles;
@@ -41,6 +49,11 @@ class User extends Authenticatable
         'timezone',
         'email_notification',
         'email_reminder',
+        'department_id',
+        'position_id',
+        'salary',
+        'hire_date',
+        'employment_status',
     ];
 
     /**
@@ -61,10 +74,14 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'created_at' => DateCast::class,
+            'salary' => 'decimal:2',
+            'hire_date' => 'date',
         ];
     }
 
-    public array $defaultValues = [];
+    public array $defaultValues = [
+        'employment_status' => EmploymentStatus::ACTIVE,
+    ];
 
     public function setFileConfigName(): string
     {
