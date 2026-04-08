@@ -2,11 +2,14 @@
 
 namespace App\Models\Payslip;
 
+use App\Models\Base\Concerns\ScopesEmployeeOwnedDataTable;
 use App\Models\Base\Search;
 use Illuminate\Database\Eloquent\Builder;
 
 class PayslipSearch extends Search
 {
+    use ScopesEmployeeOwnedDataTable;
+
     protected array $orderables = [
         'id',
         'period_year',
@@ -48,6 +51,6 @@ class PayslipSearch extends Search
 
     public function totalCount(): int
     {
-        return Payslip::count();
+        return $this->assigneeScopedTotalCount(Payslip::class);
     }
 }

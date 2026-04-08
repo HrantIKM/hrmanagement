@@ -2,11 +2,14 @@
 
 namespace App\Models\Goal;
 
+use App\Models\Base\Concerns\ScopesEmployeeOwnedDataTable;
 use App\Models\Base\Search;
 use Illuminate\Database\Eloquent\Builder;
 
 class GoalSearch extends Search
 {
+    use ScopesEmployeeOwnedDataTable;
+
     protected array $orderables = [
         'id',
         'title',
@@ -18,7 +21,7 @@ class GoalSearch extends Search
     {
         $filters = $this->filters;
 
-        return Goal::with(['user'])->select([
+        $query = Goal::with(['user'])->select([
             'id',
             'title',
             'target_value',
@@ -26,7 +29,11 @@ class GoalSearch extends Search
             'deadline',
             'type',
             'user_id',
-        ])
+        ]);
+
+        $this->scopeToAssigneeUnlessAdmin($query);
+
+        return $query
             ->when(!empty($filters['search']), function ($query) use ($filters) {
                 $query->likeOr(['id', 'title'], $filters);
             })
@@ -46,6 +53,6 @@ class GoalSearch extends Search
 
     public function totalCount(): int
     {
-        return Goal::count();
+        return $this->assigneeScopedTotalCount(Goal::class);
     }
 }

@@ -10,7 +10,6 @@ const options = {
     roles: 'name',
     department: 'name',
     position: 'title',
-    skills: 'name',
   },
 
   actions: {

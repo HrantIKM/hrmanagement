@@ -13,9 +13,19 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="form-group required">
+                            <x-dashboard.form._select name="department_id" :data="$departmentOptions"
+                                                      :value="$skill->department_id ?? ''"
+                                                      allowClear defaultOption class="select2"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group required">
                             <x-dashboard.form._input name="name" :value="$skill->name"/>
                         </div>
                     </div>
+                </div>
+
+                <div class="row">
                     <div class="col-lg-6">
                         <div class="form-group required">
                             <x-dashboard.form._select name="category" :data="$skillCategoryOptions"
@@ -31,4 +41,3 @@
         <script src="{{ asset('/js/dashboard/skill/main.js') }}"></script>
     </x-slot>
 </x-dashboard.layouts.app>
-

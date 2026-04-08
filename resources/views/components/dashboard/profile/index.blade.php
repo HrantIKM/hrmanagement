@@ -59,6 +59,62 @@
 
             </x-dashboard.form._form>
         </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">{{ __('page.profile.work_card_title') }}</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small mb-4">{{ __('page.profile.work_card_hint') }}</p>
+
+                <div class="row">
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="fw-semibold text-muted small">{{ __('label.department_id') }}</div>
+                        <div>{{ $user->department?->name ?? '—' }}</div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="fw-semibold text-muted small">{{ __('label.position_id') }}</div>
+                        <div>{{ $user->position?->title ?? '—' }}</div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="fw-semibold text-muted small">{{ __('label.salary') }}</div>
+                        <div>
+                            @if($user->salary !== null)
+                                {{ number_format((float) $user->salary, 2, '.', ',') }}
+                            @else
+                                —
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="fw-semibold text-muted small">{{ __('label.hire_date') }}</div>
+                        <div>{{ $user->hire_date?->format('Y-m-d') ?? '—' }}</div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="fw-semibold text-muted small">{{ __('label.employment_status') }}</div>
+                        <div>{{ $user->employment_status_display }}</div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="fw-semibold text-muted small mb-2">{{ __('page.profile.skills') }}</div>
+                @if($user->skills->isNotEmpty())
+                    <ul class="list-unstyled mb-0 row g-2">
+                        @foreach($user->skills->sortBy('name') as $skill)
+                            <li class="col-md-6 col-lg-4">
+                                <span class="d-inline-block border rounded px-2 py-1 bg-light small w-100">
+                                    {{ $skill->name }}
+                                    <span class="text-muted">· {{ $skill->category_label }}</span>
+                                </span>
+                            </li>
+                        @endforeach
+                    </ul>
+                @else
+                    <p class="text-muted mb-0">{{ __('page.profile.no_skills') }}</p>
+                @endif
+            </div>
+        </div>
     </div>
 
     {{--  Crop Modal  --}}

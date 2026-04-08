@@ -4,6 +4,7 @@ namespace App\Models\Department;
 
 use App\Models\Base\BaseModel;
 use App\Models\Base\Traits\HasFileData;
+use App\Models\Department\Enums\DepartmentCode;
 use App\Models\Department\Traits\DepartmentRelations;
 use App\Models\File\File;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -24,6 +25,11 @@ class Department extends BaseModel
     public function setFileConfigName(): string
     {
         return self::getClassName();
+    }
+
+    public function departmentCode(): ?DepartmentCode
+    {
+        return DepartmentCode::tryFrom($this->name);
     }
 
     public function files(?string $fieldName = null, ?string $fileType = null): MorphMany

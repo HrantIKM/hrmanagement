@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Contracts\Project\IProjectRepository;
+use App\Http\Controllers\Dashboard\Concerns\AuthorizesDashboardEmployeeAccess;
 use App\Http\Requests\Project\ProjectRequest;
 use App\Http\Requests\Project\ProjectSearchRequest;
 use App\Models\Project\Enums\ProjectStatus;
@@ -14,6 +15,8 @@ use Illuminate\Http\JsonResponse;
 
 class ProjectController extends BaseController
 {
+    use AuthorizesDashboardEmployeeAccess;
+
     public function __construct(
         ProjectService $service,
         IProjectRepository $repository
@@ -26,7 +29,8 @@ class ProjectController extends BaseController
     {
         return $this->dashboardView('project.index', [
             'projectStatuses' => collect(ProjectStatus::ALL)
-                ->mapWithKeys(fn (string $v) => [$v => __('project.status.' . $v)]),
+                ->mapWithKeys(fn(string $v) => [$v => __('project.status.' . $v)]),
+            'createRoute' => $this->dashboardUserIsAdmin() ? route('dashboard.projects.create') : null,
         ]);
     }
 
@@ -43,6 +47,8 @@ class ProjectController extends BaseController
 
     public function create(): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'project.form',
             vars: $this->service->getViewData()
@@ -51,6 +57,8 @@ class ProjectController extends BaseController
 
     public function store(ProjectRequest $request): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated());
 
         return $this->sendOkCreated([
@@ -60,6 +68,8 @@ class ProjectController extends BaseController
 
     public function show(Project $project): View
     {
+        $this->abortUnlessAdminOrProjectMember($project);
+
         return $this->dashboardView(
             view: 'project.form',
             vars: $this->service->getViewData($project->id),
@@ -69,6 +79,8 @@ class ProjectController extends BaseController
 
     public function edit(Project $project): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'project.form',
             vars: $this->service->getViewData($project->id),
@@ -78,6 +90,8 @@ class ProjectController extends BaseController
 
     public function update(ProjectRequest $request, Project $project): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated(), $project->id);
 
         return $this->sendOkUpdated([
@@ -87,6 +101,8 @@ class ProjectController extends BaseController
 
     public function destroy(Project $project): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->delete($project->id);
 
         return $this->sendOkDeleted();

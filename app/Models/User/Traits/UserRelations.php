@@ -5,6 +5,7 @@ namespace App\Models\User\Traits;
 use App\Models\Department\Department;
 use App\Models\File\File;
 use App\Models\Goal\Goal;
+use App\Models\Meeting\Meeting;
 use App\Models\Payslip\Payslip;
 use App\Models\Position\Position;
 use App\Models\Project\Project;
@@ -78,5 +79,10 @@ trait UserRelations
     public function projects(): BelongsToMany
     {
         return $this->belongsToMany(Project::class)->withTimestamps();
+    }
+
+    public function meetings(): BelongsToMany
+    {
+        return $this->belongsToMany(Meeting::class)->withTimestamps();
     }
 }

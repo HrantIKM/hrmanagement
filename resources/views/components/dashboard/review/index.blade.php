@@ -1,7 +1,7 @@
 <x-dashboard.layouts.app>
     <div class="container-fluid">
         <div class="card mb-4">
-            <x-dashboard.layouts.partials.card-header :createRoute="route('dashboard.reviews.create')"/>
+            <x-dashboard.layouts.partials.card-header :createRoute="$createRoute"/>
 
             <div class="card-body">
                 <x-dashboard.datatable._filters_form>

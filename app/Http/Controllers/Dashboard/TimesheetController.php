@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Dashboard;
 use App\Contracts\Task\ITaskRepository;
 use App\Contracts\Timesheet\ITimesheetRepository;
 use App\Contracts\User\IUserRepository;
+use App\Http\Controllers\Dashboard\Concerns\AuthorizesDashboardEmployeeAccess;
 use App\Http\Requests\Timesheet\TimesheetRequest;
 use App\Http\Requests\Timesheet\TimesheetSearchRequest;
+use App\Models\Task\Task;
 use App\Models\Timesheet\Timesheet;
 use App\Models\Timesheet\TimesheetSearch;
 use App\Services\Timesheet\TimesheetService;
@@ -15,6 +17,8 @@ use Illuminate\Http\JsonResponse;
 
 class TimesheetController extends BaseController
 {
+    use AuthorizesDashboardEmployeeAccess;
+
     public function __construct(
         TimesheetService $service,
         ITimesheetRepository $repository,
@@ -54,7 +58,19 @@ class TimesheetController extends BaseController
 
     public function store(TimesheetRequest $request): JsonResponse
     {
-        $this->service->createOrUpdate($request->validated());
+        $data = $request->validated();
+        if (!$this->dashboardUserIsAdmin()) {
+            $data['user_id'] = (int) auth()->id();
+            if (!empty($data['task_id'])) {
+                $task = Task::query()->find($data['task_id']);
+                abort_unless(
+                    $task && (int) $task->user_id === (int) auth()->id(),
+                    403
+                );
+            }
+        }
+
+        $this->service->createOrUpdate($data);
 
         return $this->sendOkCreated([
             'redirectUrl' => route('dashboard.timesheets.index'),
@@ -63,6 +79,8 @@ class TimesheetController extends BaseController
 
     public function show(Timesheet $timesheet): View
     {
+        $this->abortUnlessAdminOrOwnsUserId($timesheet->user_id);
+
         return $this->dashboardView(
             view: 'timesheet.form',
             vars: $this->service->getViewData($timesheet->id),
@@ -72,6 +90,8 @@ class TimesheetController extends BaseController
 
     public function edit(Timesheet $timesheet): View
     {
+        $this->abortUnlessAdminOrOwnsUserId($timesheet->user_id);
+
         return $this->dashboardView(
             view: 'timesheet.form',
             vars: $this->service->getViewData($timesheet->id),
@@ -81,7 +101,21 @@ class TimesheetController extends BaseController
 
     public function update(TimesheetRequest $request, Timesheet $timesheet): JsonResponse
     {
-        $this->service->createOrUpdate($request->validated(), $timesheet->id);
+        $this->abortUnlessAdminOrOwnsUserId($timesheet->user_id);
+
+        $data = $request->validated();
+        if (!$this->dashboardUserIsAdmin()) {
+            $data['user_id'] = (int) auth()->id();
+            if (!empty($data['task_id'])) {
+                $task = Task::query()->find($data['task_id']);
+                abort_unless(
+                    $task && (int) $task->user_id === (int) auth()->id(),
+                    403
+                );
+            }
+        }
+
+        $this->service->createOrUpdate($data, $timesheet->id);
 
         return $this->sendOkUpdated([
             'redirectUrl' => route('dashboard.timesheets.index'),
@@ -90,6 +124,8 @@ class TimesheetController extends BaseController
 
     public function destroy(Timesheet $timesheet): JsonResponse
     {
+        $this->abortUnlessAdminOrOwnsUserId($timesheet->user_id);
+
         $this->service->delete($timesheet->id);
 
         return $this->sendOkDeleted();

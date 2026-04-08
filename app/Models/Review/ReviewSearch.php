@@ -2,11 +2,14 @@
 
 namespace App\Models\Review;
 
+use App\Models\Base\Concerns\ScopesEmployeeOwnedDataTable;
 use App\Models\Base\Search;
 use Illuminate\Database\Eloquent\Builder;
 
 class ReviewSearch extends Search
 {
+    use ScopesEmployeeOwnedDataTable;
+
     protected array $orderables = [
         'id',
         'rating',
@@ -44,6 +47,6 @@ class ReviewSearch extends Search
 
     public function totalCount(): int
     {
-        return Review::count();
+        return $this->assigneeScopedTotalCount(Review::class);
     }
 }

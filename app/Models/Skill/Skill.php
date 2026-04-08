@@ -4,10 +4,12 @@ namespace App\Models\Skill;
 
 use App\Models\Base\BaseModel;
 use App\Models\Candidate\Candidate;
+use App\Models\Department\Department;
 use App\Models\Skill\Enums\SkillCategory;
 use App\Models\User\User;
 use App\Models\Vacancy\Vacancy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Skill extends BaseModel
@@ -25,11 +27,17 @@ class Skill extends BaseModel
     protected $fillable = [
         'name',
         'category',
+        'department_id',
     ];
 
     public array $defaultValues = [
         'category' => SkillCategory::TECHNICAL,
     ];
+
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
+    }
 
     public function users(): BelongsToMany
     {
@@ -49,7 +57,7 @@ class Skill extends BaseModel
     protected function categoryLabel(): Attribute
     {
         return new Attribute(
-            get: fn () => $this->category
+            get: fn() => $this->category
                 ? __('skill.category.' . $this->category)
                 : ''
         );

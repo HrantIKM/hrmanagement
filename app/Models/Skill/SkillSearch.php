@@ -17,10 +17,11 @@ class SkillSearch extends Search
     {
         $filters = $this->filters;
 
-        return Skill::select([
+        return Skill::with(['department'])->select([
             'id',
             'name',
             'category',
+            'department_id',
         ])
             ->when(!empty($filters['search']), function ($query) use ($filters) {
                 $query->likeOr(['id', 'name'], $filters);
@@ -33,6 +34,9 @@ class SkillSearch extends Search
             })
             ->when(!empty($filters['category']), function ($query) use ($filters) {
                 $query->where('category', $filters['category']);
+            })
+            ->when(!empty($filters['department_id']), function ($query) use ($filters) {
+                $query->where('department_id', $filters['department_id']);
             });
     }
 

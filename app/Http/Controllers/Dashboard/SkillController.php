@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Dashboard;
 use App\Contracts\Skill\ISkillRepository;
 use App\Http\Requests\Skill\SkillRequest;
 use App\Http\Requests\Skill\SkillSearchRequest;
+use App\Models\Department\Department;
+use App\Models\Department\Enums\DepartmentCode;
 use App\Models\Skill\Enums\SkillCategory;
 use App\Models\Skill\Skill;
 use App\Models\Skill\SkillSearch;
@@ -26,7 +28,12 @@ class SkillController extends BaseController
     {
         return $this->dashboardView('skill.index', [
             'skillCategories' => collect(SkillCategory::ALL)
-                ->mapWithKeys(fn (string $v) => [$v => __('skill.category.' . $v)]),
+                ->mapWithKeys(fn(string $v) => [$v => __('skill.category.' . $v)]),
+            'departments' => Department::query()
+                ->whereIn('name', DepartmentCode::values())
+                ->orderBy('name')
+                ->get()
+                ->mapWithKeys(fn(Department $d) => [$d->id => $d->name]),
         ]);
     }
 

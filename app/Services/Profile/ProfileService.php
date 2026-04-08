@@ -19,6 +19,19 @@ class ProfileService extends BaseService
         $this->fileService = $fileService;
     }
 
+    public function getViewData(?int $id = null): array
+    {
+        if ($id === null) {
+            return parent::getViewData(null);
+        }
+
+        $user = $this->repository->find($id, ['avatar', 'department', 'position', 'skills']);
+
+        return [
+            'user' => $user,
+        ];
+    }
+
     public function update(array $data, ?int $id = null): Model
     {
         return DB::transaction(function () use ($id, $data) {

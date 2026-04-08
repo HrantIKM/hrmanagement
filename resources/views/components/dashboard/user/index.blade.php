@@ -27,7 +27,6 @@
                     <th data-key="department" data-orderable="false">{{ __('label.department_id') }}</th>
                     <th data-key="position" data-orderable="false">{{ __('label.position_id') }}</th>
                     <th data-key="employment_status_display" data-orderable="false">{{ __('label.employment_status') }}</th>
-                    <th data-key="skills" data-orderable="false">{{ __('label.skill_ids') }}</th>
                     <th data-key="roles" data-orderable="false">{{ __('label.roles') }}</th>
                     <th data-key="created_at">{{ __('label.created_at') }}</th>
                     <th class="text-center" style="width: 90px">{{ __('label.actions') }}</th>

@@ -2,11 +2,14 @@
 
 namespace App\Models\Task;
 
+use App\Models\Base\Concerns\ScopesEmployeeOwnedDataTable;
 use App\Models\Base\Search;
 use Illuminate\Database\Eloquent\Builder;
 
 class TaskSearch extends Search
 {
+    use ScopesEmployeeOwnedDataTable;
+
     protected array $orderables = [
         'id',
         'title',
@@ -54,6 +57,6 @@ class TaskSearch extends Search
 
     public function totalCount(): int
     {
-        return Task::count();
+        return $this->assigneeScopedTotalCount(Task::class);
     }
 }

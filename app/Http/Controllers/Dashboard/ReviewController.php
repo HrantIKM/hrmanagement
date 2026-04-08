@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Contracts\Review\IReviewRepository;
+use App\Http\Controllers\Dashboard\Concerns\AuthorizesDashboardEmployeeAccess;
 use App\Http\Requests\Review\ReviewRequest;
 use App\Http\Requests\Review\ReviewSearchRequest;
 use App\Models\Review\Review;
@@ -13,6 +14,8 @@ use Illuminate\Http\JsonResponse;
 
 class ReviewController extends BaseController
 {
+    use AuthorizesDashboardEmployeeAccess;
+
     public function __construct(
         ReviewService $service,
         IReviewRepository $repository
@@ -23,7 +26,9 @@ class ReviewController extends BaseController
 
     public function index(): View
     {
-        return $this->dashboardView('review.index', $this->service->getIndexViewData());
+        return $this->dashboardView('review.index', array_merge($this->service->getIndexViewData(), [
+            'createRoute' => $this->dashboardUserIsAdmin() ? route('dashboard.reviews.create') : null,
+        ]));
     }
 
     public function getListData(ReviewSearchRequest $request): array
@@ -47,6 +52,8 @@ class ReviewController extends BaseController
 
     public function store(ReviewRequest $request): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated());
 
         return $this->sendOkCreated([
@@ -65,6 +72,8 @@ class ReviewController extends BaseController
 
     public function edit(Review $review): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'review.form',
             vars: $this->service->getViewData($review->id),
@@ -74,6 +83,8 @@ class ReviewController extends BaseController
 
     public function update(ReviewRequest $request, Review $review): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated(), $review->id);
 
         return $this->sendOkUpdated([
@@ -83,6 +94,8 @@ class ReviewController extends BaseController
 
     public function destroy(Review $review): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->delete($review->id);
 
         return $this->sendOkDeleted();

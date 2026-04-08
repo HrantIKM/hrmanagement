@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Contracts\Goal\IGoalRepository;
+use App\Http\Controllers\Dashboard\Concerns\AuthorizesDashboardEmployeeAccess;
 use App\Http\Requests\Goal\GoalRequest;
 use App\Http\Requests\Goal\GoalSearchRequest;
 use App\Models\Goal\Goal;
@@ -13,6 +14,8 @@ use Illuminate\Http\JsonResponse;
 
 class GoalController extends BaseController
 {
+    use AuthorizesDashboardEmployeeAccess;
+
     public function __construct(
         GoalService $service,
         IGoalRepository $repository
@@ -23,7 +26,9 @@ class GoalController extends BaseController
 
     public function index(): View
     {
-        return $this->dashboardView('goal.index', $this->service->getIndexViewData());
+        return $this->dashboardView('goal.index', array_merge($this->service->getIndexViewData(), [
+            'createRoute' => $this->dashboardUserIsAdmin() ? route('dashboard.goals.create') : null,
+        ]));
     }
 
     public function getListData(GoalSearchRequest $request): array
@@ -39,6 +44,8 @@ class GoalController extends BaseController
 
     public function create(): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'goal.form',
             vars: $this->service->getViewData()
@@ -47,6 +54,8 @@ class GoalController extends BaseController
 
     public function store(GoalRequest $request): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated());
 
         return $this->sendOkCreated([
@@ -56,6 +65,8 @@ class GoalController extends BaseController
 
     public function show(Goal $goal): View
     {
+        $this->abortUnlessAdminOrOwnsUserId($goal->user_id);
+
         return $this->dashboardView(
             view: 'goal.form',
             vars: $this->service->getViewData($goal->id),
@@ -65,6 +76,8 @@ class GoalController extends BaseController
 
     public function edit(Goal $goal): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'goal.form',
             vars: $this->service->getViewData($goal->id),
@@ -74,6 +87,8 @@ class GoalController extends BaseController
 
     public function update(GoalRequest $request, Goal $goal): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated(), $goal->id);
 
         return $this->sendOkUpdated([
@@ -83,6 +98,8 @@ class GoalController extends BaseController
 
     public function destroy(Goal $goal): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->delete($goal->id);
 
         return $this->sendOkDeleted();

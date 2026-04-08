@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Contracts\Project\IProjectRepository;
 use App\Contracts\Task\ITaskRepository;
 use App\Contracts\User\IUserRepository;
+use App\Http\Controllers\Dashboard\Concerns\AuthorizesDashboardEmployeeAccess;
 use App\Http\Requests\Task\TaskRequest;
 use App\Http\Requests\Task\TaskSearchRequest;
 use App\Models\Task\Enums\TaskPriority;
@@ -17,6 +18,8 @@ use Illuminate\Http\JsonResponse;
 
 class TaskController extends BaseController
 {
+    use AuthorizesDashboardEmployeeAccess;
+
     public function __construct(
         TaskService $service,
         ITaskRepository $repository,
@@ -33,9 +36,10 @@ class TaskController extends BaseController
             'projects' => $this->projectRepository->getForSelect(),
             'users' => $this->userRepository->getForSelect(),
             'taskPriorities' => collect(TaskPriority::ALL)
-                ->mapWithKeys(fn (string $v) => [$v => __('task.priority.' . $v)]),
+                ->mapWithKeys(fn(string $v) => [$v => __('task.priority.' . $v)]),
             'taskStatuses' => collect(TaskStatus::ALL)
-                ->mapWithKeys(fn (string $v) => [$v => __('task.status.' . $v)]),
+                ->mapWithKeys(fn(string $v) => [$v => __('task.status.' . $v)]),
+            'createRoute' => $this->dashboardUserIsAdmin() ? route('dashboard.tasks.create') : null,
         ]);
     }
 
@@ -52,6 +56,8 @@ class TaskController extends BaseController
 
     public function create(): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'task.form',
             vars: $this->service->getViewData()
@@ -60,6 +66,8 @@ class TaskController extends BaseController
 
     public function store(TaskRequest $request): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated());
 
         return $this->sendOkCreated([
@@ -69,6 +77,8 @@ class TaskController extends BaseController
 
     public function show(Task $task): View
     {
+        $this->abortUnlessAdminOrOwnsUserId($task->user_id);
+
         return $this->dashboardView(
             view: 'task.form',
             vars: $this->service->getViewData($task->id),
@@ -78,6 +88,8 @@ class TaskController extends BaseController
 
     public function edit(Task $task): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'task.form',
             vars: $this->service->getViewData($task->id),
@@ -96,6 +108,8 @@ class TaskController extends BaseController
 
     public function destroy(Task $task): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->delete($task->id);
 
         return $this->sendOkDeleted();

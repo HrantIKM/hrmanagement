@@ -81,7 +81,7 @@ class MenuSeeder extends Seeder
                 'url' => route('dashboard.projects.index', [], false),
                 'icon' => 'fas fa-project-diagram fa-fw',
                 'type' => 'admin',
-                'role' => [RoleType::ADMIN],
+                'role' => [RoleType::ADMIN, RoleType::USER],
             ],
             [
                 'title' => 'Tasks',
@@ -89,7 +89,7 @@ class MenuSeeder extends Seeder
                 'url' => route('dashboard.tasks.index', [], false),
                 'icon' => 'fas fa-tasks fa-fw',
                 'type' => 'admin',
-                'role' => [RoleType::ADMIN],
+                'role' => [RoleType::ADMIN, RoleType::USER],
             ],
             [
                 'title' => 'Timesheets',
@@ -97,7 +97,7 @@ class MenuSeeder extends Seeder
                 'url' => route('dashboard.timesheets.index', [], false),
                 'icon' => 'fas fa-clock fa-fw',
                 'type' => 'admin',
-                'role' => [RoleType::ADMIN],
+                'role' => [RoleType::ADMIN, RoleType::USER],
             ],
             [
                 'title' => 'Goals',
@@ -105,7 +105,7 @@ class MenuSeeder extends Seeder
                 'url' => route('dashboard.goals.index', [], false),
                 'icon' => 'fas fa-bullseye fa-fw',
                 'type' => 'admin',
-                'role' => [RoleType::ADMIN],
+                'role' => [RoleType::ADMIN, RoleType::USER],
             ],
             [
                 'title' => 'Reviews',
@@ -113,7 +113,31 @@ class MenuSeeder extends Seeder
                 'url' => route('dashboard.reviews.index', [], false),
                 'icon' => 'fas fa-clipboard-check fa-fw',
                 'type' => 'admin',
-                'role' => [RoleType::ADMIN],
+                'role' => [RoleType::ADMIN, RoleType::USER],
+            ],
+            [
+                'title' => 'Meetings',
+                'slug' => 'meetings',
+                'url' => route('dashboard.meetings.index', [], false),
+                'icon' => 'fas fa-handshake fa-fw',
+                'type' => 'admin',
+                'role' => [RoleType::ADMIN, RoleType::USER],
+            ],
+            [
+                'title' => 'Leave Requests',
+                'slug' => 'leave-requests',
+                'url' => route('dashboard.leave-requests.index', [], false),
+                'icon' => 'fas fa-plane-departure fa-fw',
+                'type' => 'admin',
+                'role' => [RoleType::ADMIN, RoleType::USER],
+            ],
+            [
+                'title' => 'Attendance',
+                'slug' => 'attendances',
+                'url' => route('dashboard.attendances.index', [], false),
+                'icon' => 'fas fa-user-check fa-fw',
+                'type' => 'admin',
+                'role' => [RoleType::ADMIN, RoleType::USER],
             ],
             [
                 'title' => 'Salaries',
@@ -129,7 +153,7 @@ class MenuSeeder extends Seeder
                 'url' => route('dashboard.payslips.index', [], false),
                 'icon' => 'fas fa-file-invoice-dollar fa-fw',
                 'type' => 'admin',
-                'role' => [RoleType::ADMIN],
+                'role' => [RoleType::ADMIN, RoleType::USER],
             ],
             [
                 'title' => 'Articles',

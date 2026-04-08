@@ -2,11 +2,14 @@
 
 namespace App\Models\Project;
 
+use App\Models\Base\Concerns\ScopesEmployeeOwnedDataTable;
 use App\Models\Base\Search;
 use Illuminate\Database\Eloquent\Builder;
 
 class ProjectSearch extends Search
 {
+    use ScopesEmployeeOwnedDataTable;
+
     protected array $orderables = [
         'id',
         'name',
@@ -19,14 +22,18 @@ class ProjectSearch extends Search
     {
         $filters = $this->filters;
 
-        return Project::select([
+        $query = Project::select([
             'id',
             'name',
             'description',
             'start_date',
             'end_date',
             'status',
-        ])
+        ]);
+
+        $this->scopeToProjectMemberUnlessAdmin($query);
+
+        return $query
             ->when(!empty($filters['search']), function ($query) use ($filters) {
                 $query->likeOr(['id', 'name', 'description'], $filters);
             })
@@ -43,6 +50,8 @@ class ProjectSearch extends Search
 
     public function totalCount(): int
     {
-        return Project::count();
+        $query = Project::query();
+
+        return $this->scopeToProjectMemberUnlessAdmin($query)->count();
     }
 }

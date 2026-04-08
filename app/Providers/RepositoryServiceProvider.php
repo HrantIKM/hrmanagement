@@ -3,10 +3,13 @@
 namespace App\Providers;
 
 use App\Contracts\Article\IArticleRepository;
+use App\Contracts\Attendance\IAttendanceRepository;
 use App\Contracts\Candidate\ICandidateRepository;
 use App\Contracts\Department\IDepartmentRepository;
 use App\Contracts\File\IFileRepository;
 use App\Contracts\Goal\IGoalRepository;
+use App\Contracts\LeaveRequest\ILeaveRequestRepository;
+use App\Contracts\Meeting\IMeetingRepository;
 use App\Contracts\Payslip\IPayslipRepository;
 use App\Contracts\Position\IPositionRepository;
 use App\Contracts\Project\IProjectRepository;
@@ -19,10 +22,13 @@ use App\Contracts\Timesheet\ITimesheetRepository;
 use App\Contracts\User\IUserRepository;
 use App\Contracts\Vacancy\IVacancyRepository;
 use App\Repositories\Article\ArticleRepository;
+use App\Repositories\Attendance\AttendanceRepository;
 use App\Repositories\Candidate\CandidateRepository;
 use App\Repositories\Department\DepartmentRepository;
 use App\Repositories\File\FileRepository;
 use App\Repositories\Goal\GoalRepository;
+use App\Repositories\LeaveRequest\LeaveRequestRepository;
+use App\Repositories\Meeting\MeetingRepository;
 use App\Repositories\Payslip\PayslipRepository;
 use App\Repositories\Position\PositionRepository;
 use App\Repositories\Project\ProjectRepository;
@@ -55,6 +61,9 @@ class RepositoryServiceProvider extends ServiceProvider
         ITaskRepository::class => TaskRepository::class,
         ITimesheetRepository::class => TimesheetRepository::class,
         IGoalRepository::class => GoalRepository::class,
+        ILeaveRequestRepository::class => LeaveRequestRepository::class,
+        IAttendanceRepository::class => AttendanceRepository::class,
+        IMeetingRepository::class => MeetingRepository::class,
         IReviewRepository::class => ReviewRepository::class,
         ISalaryRepository::class => SalaryRepository::class,
         IPayslipRepository::class => PayslipRepository::class,

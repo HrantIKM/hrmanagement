@@ -6,10 +6,12 @@ const options = {
     showPath: route('dashboard.skills.show', ':id'),
   },
 
-  relations: {},
+  relations: {
+    department: 'name',
+  },
 
   actions: {
-      show: false,
+    show: false,
   },
 };
 // eslint-disable-next-line no-new,no-undef

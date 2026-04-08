@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Contracts\Payslip\IPayslipRepository;
+use App\Http\Controllers\Dashboard\Concerns\AuthorizesDashboardEmployeeAccess;
 use App\Http\Requests\Payslip\PayslipRequest;
 use App\Http\Requests\Payslip\PayslipSearchRequest;
 use App\Models\Payslip\Payslip;
@@ -13,6 +14,8 @@ use Illuminate\Http\JsonResponse;
 
 class PayslipController extends BaseController
 {
+    use AuthorizesDashboardEmployeeAccess;
+
     public function __construct(
         PayslipService $service,
         IPayslipRepository $repository
@@ -23,7 +26,9 @@ class PayslipController extends BaseController
 
     public function index(): View
     {
-        return $this->dashboardView('payslip.index', $this->service->getIndexViewData());
+        return $this->dashboardView('payslip.index', array_merge($this->service->getIndexViewData(), [
+            'createRoute' => $this->dashboardUserIsAdmin() ? route('dashboard.payslips.create') : null,
+        ]));
     }
 
     public function getListData(PayslipSearchRequest $request): array
@@ -39,6 +44,8 @@ class PayslipController extends BaseController
 
     public function create(): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'payslip.form',
             vars: $this->service->getViewData()
@@ -47,6 +54,8 @@ class PayslipController extends BaseController
 
     public function store(PayslipRequest $request): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated());
 
         return $this->sendOkCreated([
@@ -65,6 +74,8 @@ class PayslipController extends BaseController
 
     public function edit(Payslip $payslip): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'payslip.form',
             vars: $this->service->getViewData($payslip->id),
@@ -83,6 +94,8 @@ class PayslipController extends BaseController
 
     public function destroy(Payslip $payslip): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->delete($payslip->id);
 
         return $this->sendOkDeleted();

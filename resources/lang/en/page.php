@@ -122,6 +122,42 @@ return [
         'index' => ['title' => 'Reviews', 'create' => 'Create Review', 'description' => ''],
     ],
 
+    'meeting' => [
+        'form' => [
+            'add' => ['title' => 'Create Meeting', 'description' => ''],
+            'edit' => ['title' => 'Edit Meeting', 'description' => ''],
+            'show' => ['title' => 'Meeting', 'description' => ''],
+        ],
+        'index' => ['title' => 'Meetings', 'create' => 'Create Meeting', 'description' => ''],
+    ],
+
+    'leave_request' => [
+        'form' => [
+            'add' => ['title' => 'Create Leave Request', 'description' => ''],
+            'edit' => ['title' => 'Edit Leave Request', 'description' => ''],
+            'show' => ['title' => 'Leave Request', 'description' => ''],
+        ],
+        'index' => ['title' => 'Leave Requests', 'create' => 'Create Leave Request', 'description' => ''],
+    ],
+
+    'leave-request' => [
+        'form' => [
+            'add' => ['title' => 'Create Leave Request', 'description' => ''],
+            'edit' => ['title' => 'Edit Leave Request', 'description' => ''],
+            'show' => ['title' => 'Leave Request', 'description' => ''],
+        ],
+        'index' => ['title' => 'Leave Requests', 'create' => 'Create Leave Request', 'description' => ''],
+    ],
+
+    'attendance' => [
+        'form' => [
+            'add' => ['title' => 'Create Attendance', 'description' => ''],
+            'edit' => ['title' => 'Edit Attendance', 'description' => ''],
+            'show' => ['title' => 'Attendance', 'description' => ''],
+        ],
+        'index' => ['title' => 'Attendance', 'create' => 'Create Attendance', 'description' => ''],
+    ],
+
     'salary' => [
         'form' => [
             'add' => ['title' => 'Create Salary', 'description' => ''],
@@ -167,5 +203,13 @@ return [
         ],
 
         'dropdown' => 'My Profile',
+
+        'work_card_title' => 'Your work details',
+
+        'work_card_hint' => 'This information is maintained by HR. Contact HR if something needs to be updated.',
+
+        'skills' => 'Assigned skills',
+
+        'no_skills' => 'No skills are assigned to your profile yet.',
     ],
 ];

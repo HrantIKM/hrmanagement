@@ -26,6 +26,8 @@ class ProfileController extends BaseController
 
     public function update(ProfileRequest $profileRequest, int $id): JsonResponse
     {
+        abort_unless((int) $id === (int) auth()->id(), 403);
+
         $this->service->update($profileRequest->validated(), $id);
 
         return $this->sendOkUpdated([

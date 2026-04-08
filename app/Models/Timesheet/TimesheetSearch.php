@@ -2,11 +2,14 @@
 
 namespace App\Models\Timesheet;
 
+use App\Models\Base\Concerns\ScopesEmployeeOwnedDataTable;
 use App\Models\Base\Search;
 use Illuminate\Database\Eloquent\Builder;
 
 class TimesheetSearch extends Search
 {
+    use ScopesEmployeeOwnedDataTable;
+
     protected array $orderables = [
         'id',
         'date',
@@ -17,7 +20,7 @@ class TimesheetSearch extends Search
     {
         $filters = $this->filters;
 
-        return Timesheet::with(['user', 'task'])->select([
+        $query = Timesheet::with(['user', 'task'])->select([
             'id',
             'user_id',
             'task_id',
@@ -26,7 +29,11 @@ class TimesheetSearch extends Search
             'end_time',
             'duration_minutes',
             'note',
-        ])
+        ]);
+
+        $this->scopeToAssigneeUnlessAdmin($query);
+
+        return $query
             ->when(!empty($filters['search']), function ($query) use ($filters) {
                 $query->likeOr(['id', 'note'], $filters);
             })
@@ -46,6 +53,6 @@ class TimesheetSearch extends Search
 
     public function totalCount(): int
     {
-        return Timesheet::count();
+        return $this->assigneeScopedTotalCount(Timesheet::class);
     }
 }
