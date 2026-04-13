@@ -4,6 +4,7 @@ namespace App\Models\LeaveRequest;
 
 use App\Models\Base\Concerns\ScopesEmployeeOwnedDataTable;
 use App\Models\Base\Search;
+use App\Models\RoleAndPermission\Enums\RoleType;
 use Illuminate\Database\Eloquent\Builder;
 
 class LeaveRequestSearch extends Search
@@ -56,5 +57,23 @@ class LeaveRequestSearch extends Search
     public function totalCount(): int
     {
         return $this->assigneeScopedTotalCount(LeaveRequest::class);
+    }
+
+    public function setReturnData(Builder $query): mixed
+    {
+        $collection = $query->get();
+        $isAdmin = auth()->user()?->hasRole(RoleType::ADMIN) ?? false;
+
+        if ($isAdmin) {
+            return $collection;
+        }
+
+        foreach ($collection as $leaveRequest) {
+            $pending = $leaveRequest->status === Enums\LeaveRequestStatus::PENDING;
+            $leaveRequest->setAttribute('canDelete', $pending);
+            $leaveRequest->setAttribute('can_edit_leave_request', $pending);
+        }
+
+        return $collection;
     }
 }

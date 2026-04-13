@@ -24,6 +24,7 @@ class User extends Authenticatable
      */
     protected $appends = [
         'employment_status_display',
+        'avatar_url',
     ];
 
     use HasApiTokens;
@@ -64,6 +65,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'avatar',
     ];
 
     /**

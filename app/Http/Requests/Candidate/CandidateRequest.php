@@ -14,6 +14,7 @@ class CandidateRequest extends FormRequest
             'email' => $this->email === '' ? null : $this->email,
             'resume_path' => $this->resume_path === '' ? null : $this->resume_path,
             'raw_ai_data' => $this->raw_ai_data === '' ? null : $this->raw_ai_data,
+            'resume' => $this->resume === '' ? null : $this->resume,
         ]);
     }
 
@@ -22,6 +23,7 @@ class CandidateRequest extends FormRequest
         return [
             'full_name' => 'required|string_with_max',
             'email' => 'nullable|email|string_with_max',
+            'resume' => 'nullable|file|mimes:pdf|max:10240',
             'resume_path' => 'nullable|string|max:512',
             'raw_ai_data' => 'nullable|json',
             'match_score' => 'nullable|integer|min:0',

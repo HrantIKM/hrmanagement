@@ -4,8 +4,13 @@ namespace App\Services\Payslip;
 
 use App\Contracts\Payslip\IPayslipRepository;
 use App\Contracts\User\IUserRepository;
+use App\Models\Salary\Salary;
+use App\Models\Timesheet\Timesheet;
 use App\Services\BaseService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -78,5 +83,40 @@ class PayslipService extends BaseService
             Storage::disk('public')->delete($model->pdf_path);
         }
         $this->repository->destroy($id);
+    }
+
+    public function downloadGeneratedPdf(int $id): Response
+    {
+        $payslip = $this->repository->find($id, ['user']);
+        $periodStart = Carbon::create((int) $payslip->period_year, (int) $payslip->period_month, 1)->startOfMonth();
+        $periodEnd = $periodStart->copy()->endOfMonth();
+
+        $salary = Salary::query()
+            ->where('user_id', $payslip->user_id)
+            ->whereDate('effective_date', '<=', $periodEnd->toDateString())
+            ->latest('effective_date')
+            ->first();
+
+        $timesheetMinutes = (int) Timesheet::query()
+            ->where('user_id', $payslip->user_id)
+            ->whereBetween('date', [$periodStart->toDateString(), $periodEnd->toDateString()])
+            ->sum('duration_minutes');
+
+        $hoursWorked = round($timesheetMinutes / 60, 2);
+        $baseAmount = (float) ($salary?->amount ?? $payslip->base_amount);
+        $bonus = (float) $payslip->bonus;
+        $deductions = (float) $payslip->deductions;
+        $computedNet = round($baseAmount + $bonus - $deductions, 2);
+
+        $pdf = Pdf::loadView('pdf.payslip', [
+            'payslip' => $payslip,
+            'salary' => $salary,
+            'hoursWorked' => $hoursWorked,
+            'computedNet' => $computedNet,
+            'periodStart' => $periodStart,
+            'periodEnd' => $periodEnd,
+        ]);
+
+        return $pdf->download("payslip-{$payslip->id}.pdf");
     }
 }

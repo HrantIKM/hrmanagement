@@ -4,12 +4,21 @@
             {{--            <img src="/img/logo.svg" width="100" alt="Logo">--}}
         </a>
 
-        {{-- Notification Block --}}
-        @if(config('dashboard.show_notification'))
-            <a href="#" class="notification-btn ms-auto position-relative dropdown-toggle" data-bs-toggle="dropdown"
-               aria-haspopup="true" aria-expanded="false">
-                <i>15</i>
-                <span class="svg-icons">
+        {{-- Notification Block: Laravel database notifications for the signed-in user only --}}
+        @if(config('dashboard.show_notification') && auth()->check())
+            @php
+                $headerNotifications = auth()->user()->notifications()->limit(15)->get();
+                $headerUnreadCount = auth()->user()->unreadNotifications()->count();
+            @endphp
+            <div class="dropdown ms-auto">
+                <a href="#" class="notification-btn position-relative dropdown-toggle" data-bs-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false" id="dashboard-notifications-toggle">
+                    @if($headerUnreadCount > 0)
+                        <span class="js-notification-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger small">{{ $headerUnreadCount }}</span>
+                    @else
+                        <span class="js-notification-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger small" style="display: none">0</span>
+                    @endif
+                    <span class="svg-icons">
                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="25" viewBox="0 0 20.635 26.035"><defs><style>.a {
                                        fill: currentColor;
                                    }</style></defs><g transform="translate(0)"><path class="a"
@@ -22,67 +31,42 @@
                                                                                transform="translate(-53.013 -74.821)"/></g>
                        </svg>
                    </span>
-            </a>
+                </a>
 
-            <div class="dropdown-menu dropdown-menu-right p-0">
-
-                <div class="dropdown-notification simple-bar">
-                    <a href="#" class="notification-link">
-                        <div class="notification-title">
-                            New Student Registered
-                        </div>
-                        <div class="notification-time">
-                            1 week ago
-                        </div>
-                    </a>
-                    <a href="#" class="notification-link">
-                        <div class="notification-title">
-                            New Student Registered (Anna Asatryan)
-                        </div>
-                        <div class="notification-time">
-                            1 week ago
-                        </div>
-                    </a>
-                    <a href="#" class="notification-link">
-                        <div class="notification-title">
-                            New Student Registered (Anna Asatryan)
-                        </div>
-                        <div class="notification-time">
-                            1 week ago
-                        </div>
-                    </a>
-                    <a href="#" class="notification-link">
-                        <div class="notification-title">
-                            New Student Registered (Anna Asatryan)
-                        </div>
-                        <div class="notification-time">
-                            1 week ago
-                        </div>
-                    </a>
-                    <a href="#" class="notification-link">
-                        <div class="notification-title">
-                            New Student Registered (Anna Asatryan)
-                        </div>
-                        <div class="notification-time">
-                            1 week ago
-                        </div>
-                    </a>
-                    <a href="#" class="notification-link">
-                        <div class="notification-title">
-                            New Student Registered (Anna Asatryan)
-                        </div>
-                        <div class="notification-time">
-                            1 week ago
-                        </div>
-                    </a>
-
+                <div class="dropdown-menu dropdown-menu-end p-0" aria-labelledby="dashboard-notifications-toggle">
+                    <div class="dropdown-notification simple-bar">
+                        @forelse($headerNotifications as $n)
+                            @php
+                                $d = $n->data;
+                                $notifUrl = $d['url'] ?? '#';
+                                $notifTitle = $d['title'] ?? \Illuminate\Support\Str::limit($d['message'] ?? __('notifications.notification'), 72);
+                                $notifUnread = $n->read_at === null;
+                            @endphp
+                            <a href="{{ $notifUrl }}"
+                               class="notification-link js-notification-item d-block text-decoration-none {{ $notifUnread ? 'is-unread fw-semibold' : '' }}"
+                               @if($notifUnread) data-read-url="{{ route('dashboard.notifications.read', $n->id) }}" @endif>
+                                <div class="notification-title">{{ $notifTitle }}</div>
+                                <div class="notification-time">{{ $n->created_at?->diffForHumans() }}</div>
+                            </a>
+                        @empty
+                            <div class="p-3 text-muted small">{{ __('page.notification.index.empty') }}</div>
+                        @endforelse
+                    </div>
+                    <div class="d-flex border-top align-items-stretch">
+                        <a href="{{ route('dashboard.notifications.index') }}"
+                           class="notification-link-all flex-grow-1 text-center py-2 text-decoration-none">{{ __('page.notification.index.title') }}</a>
+                        @if($headerUnreadCount > 0)
+                            <a href="#"
+                               class="notification-link-all flex-grow-1 text-center py-2 border-start text-decoration-none js-mark-all-notifications-read"
+                               data-url="{{ route('dashboard.notifications.readAll') }}">{{ __('page.notification.index.mark_all_read') }}</a>
+                        @endif
+                    </div>
                 </div>
-                <a href="#" class="notification-link-all">SEE ALL</a>
             </div>
         @endif
 
         {{-- Lnaguage Block --}}
-        <div class="btn-group lang-drop {{!config('dashboard.show_notification') ? 'ms-auto' : ''}}">
+        <div class="btn-group lang-drop {{!config('dashboard.show_notification') || !auth()->check() ? 'ms-auto' : ''}}">
             <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-label="lang"
                     aria-haspopup="true" aria-expanded="false">
                 <img

@@ -2,6 +2,10 @@
     <div class="container-fluid">
         <div class="card mb-4">
             <x-dashboard.layouts.partials.card-header :createRoute="$createRoute"/>
+            <div class="px-4 pt-3 d-flex flex-wrap gap-2">
+                <a href="{{ route('dashboard.payslips.exportCsv') }}" class="btn btn-outline-primary btn-sm">Download Report (CSV)</a>
+                <a href="{{ route('dashboard.payslips.exportExcel') }}" class="btn btn-outline-primary btn-sm">Download Report (Excel)</a>
+            </div>
 
             <div class="card-body">
                 <x-dashboard.datatable._filters_form>

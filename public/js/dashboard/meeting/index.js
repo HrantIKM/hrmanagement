@@ -6,11 +6,11 @@ const options = {
     showPath: route('dashboard.meetings.show', ':id'),
   },
 
-  relations: {},
-
-  actions: {
-      show: false,
+  relations: {
+    room: 'name',
   },
+
+  actions: {},
 };
 // eslint-disable-next-line no-new,no-undef
 new DataTable(options);

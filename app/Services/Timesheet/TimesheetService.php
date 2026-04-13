@@ -19,12 +19,17 @@ class TimesheetService extends BaseService
         $this->repository = $repository;
     }
 
-    public function getViewData(?int $id = null): array
+    public function getViewData(?int $id = null, array $defaults = []): array
     {
         if ($id) {
             $timesheet = $this->repository->find($id, ['user', 'task']);
         } else {
             $timesheet = $this->repository->getInstance();
+            $timesheet->fill([
+                'user_id' => $defaults['user_id'] ?? null,
+                'task_id' => $defaults['task_id'] ?? null,
+                'date' => $defaults['date'] ?? null,
+            ]);
         }
 
         return [

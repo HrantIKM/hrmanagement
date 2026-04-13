@@ -5,6 +5,7 @@ namespace App\Services\Review;
 use App\Contracts\Review\IReviewRepository;
 use App\Contracts\User\IUserRepository;
 use App\Models\Review\Enums\ReviewPeriod;
+use App\Models\Review\Enums\ReviewPerspective;
 use App\Services\BaseService;
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,6 +24,8 @@ class ReviewService extends BaseService
         $data['users'] = $this->userRepository->getForSelect();
         $data['reviewPeriodOptions'] = collect(ReviewPeriod::ALL)
             ->mapWithKeys(fn (string $v) => [$v => __('review.period.' . $v)]);
+        $data['reviewPerspectiveOptions'] = collect(ReviewPerspective::ALL)
+            ->mapWithKeys(fn (string $v) => [$v => __('review.perspective.' . $v)]);
 
         return $data;
     }
@@ -33,6 +36,8 @@ class ReviewService extends BaseService
             'users' => $this->userRepository->getForSelect(),
             'reviewPeriodOptions' => collect(ReviewPeriod::ALL)
                 ->mapWithKeys(fn (string $v) => [$v => __('review.period.' . $v)]),
+            'reviewPerspectiveOptions' => collect(ReviewPerspective::ALL)
+                ->mapWithKeys(fn (string $v) => [$v => __('review.perspective.' . $v)]),
         ];
     }
 

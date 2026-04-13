@@ -60,6 +60,22 @@ class MenuSeeder extends Seeder
                 'role' => [RoleType::ADMIN],
             ],
             [
+                'title' => 'Holidays',
+                'slug' => 'holidays',
+                'url' => route('dashboard.holidays.index', [], false),
+                'icon' => 'fas fa-calendar-day fa-fw',
+                'type' => 'admin',
+                'role' => [RoleType::ADMIN],
+            ],
+            [
+                'title' => 'Rooms',
+                'slug' => 'rooms',
+                'url' => route('dashboard.rooms.index', [], false),
+                'icon' => 'fas fa-building fa-fw',
+                'type' => 'admin',
+                'role' => [RoleType::ADMIN],
+            ],
+            [
                 'title' => 'Vacancies',
                 'slug' => 'vacancies',
                 'url' => route('dashboard.vacancies.index', [], false),
@@ -92,6 +108,14 @@ class MenuSeeder extends Seeder
                 'role' => [RoleType::ADMIN, RoleType::USER],
             ],
             [
+                'title' => 'Task Board',
+                'slug' => 'task-board',
+                'url' => route('dashboard.tasks.board', [], false),
+                'icon' => 'fas fa-columns fa-fw',
+                'type' => 'admin',
+                'role' => [RoleType::ADMIN, RoleType::USER],
+            ],
+            [
                 'title' => 'Timesheets',
                 'slug' => 'timesheets',
                 'url' => route('dashboard.timesheets.index', [], false),
@@ -108,12 +132,20 @@ class MenuSeeder extends Seeder
                 'role' => [RoleType::ADMIN, RoleType::USER],
             ],
             [
-                'title' => 'Reviews',
+                'title' => 'My performance feedback',
+                'slug' => 'reviews-mine',
+                'url' => route('dashboard.reviews.mine', [], false),
+                'icon' => 'fas fa-star-half-alt fa-fw',
+                'type' => 'admin',
+                'role' => [RoleType::ADMIN, RoleType::USER],
+            ],
+            [
+                'title' => 'Reviews (HR)',
                 'slug' => 'reviews',
                 'url' => route('dashboard.reviews.index', [], false),
                 'icon' => 'fas fa-clipboard-check fa-fw',
                 'type' => 'admin',
-                'role' => [RoleType::ADMIN, RoleType::USER],
+                'role' => [RoleType::ADMIN],
             ],
             [
                 'title' => 'Meetings',
@@ -124,10 +156,34 @@ class MenuSeeder extends Seeder
                 'role' => [RoleType::ADMIN, RoleType::USER],
             ],
             [
+                'title' => 'Meeting Calendar',
+                'slug' => 'meetings-calendar',
+                'url' => route('dashboard.meetings.calendar', [], false),
+                'icon' => 'fas fa-calendar-alt fa-fw',
+                'type' => 'admin',
+                'role' => [RoleType::ADMIN, RoleType::USER],
+            ],
+            [
+                'title' => 'Notifications',
+                'slug' => 'notifications',
+                'url' => route('dashboard.notifications.index', [], false),
+                'icon' => 'fas fa-bell fa-fw',
+                'type' => 'admin',
+                'role' => [RoleType::ADMIN, RoleType::USER],
+            ],
+            [
                 'title' => 'Leave Requests',
                 'slug' => 'leave-requests',
                 'url' => route('dashboard.leave-requests.index', [], false),
                 'icon' => 'fas fa-plane-departure fa-fw',
+                'type' => 'admin',
+                'role' => [RoleType::ADMIN, RoleType::USER],
+            ],
+            [
+                'title' => 'Leave Balances',
+                'slug' => 'leave-balances',
+                'url' => route('dashboard.leave-balances.index', [], false),
+                'icon' => 'fas fa-wallet fa-fw',
                 'type' => 'admin',
                 'role' => [RoleType::ADMIN, RoleType::USER],
             ],
@@ -148,12 +204,20 @@ class MenuSeeder extends Seeder
                 'role' => [RoleType::ADMIN],
             ],
             [
-                'title' => 'Payslips',
+                'title' => 'My Payslips',
+                'slug' => 'payslips-mine',
+                'url' => route('dashboard.payslips.mine', [], false),
+                'icon' => 'fas fa-receipt fa-fw',
+                'type' => 'admin',
+                'role' => [RoleType::ADMIN, RoleType::USER],
+            ],
+            [
+                'title' => 'Payslips (HR)',
                 'slug' => 'payslips',
                 'url' => route('dashboard.payslips.index', [], false),
                 'icon' => 'fas fa-file-invoice-dollar fa-fw',
                 'type' => 'admin',
-                'role' => [RoleType::ADMIN, RoleType::USER],
+                'role' => [RoleType::ADMIN],
             ],
             [
                 'title' => 'Articles',
@@ -181,6 +245,20 @@ class MenuSeeder extends Seeder
                 'role' => [RoleType::ADMIN],
             ],
         ];
+
+        $translationMenu = null;
+        $menusWithoutTranslation = [];
+        foreach ($menus as $menu) {
+            if (($menu['slug'] ?? '') === 'translation-manager') {
+                $translationMenu = $menu;
+            } else {
+                $menusWithoutTranslation[] = $menu;
+            }
+        }
+        usort($menusWithoutTranslation, fn (array $a, array $b): int => strcmp((string) $a['title'], (string) $b['title']));
+        $menus = $translationMenu !== null
+            ? array_merge($menusWithoutTranslation, [$translationMenu])
+            : $menusWithoutTranslation;
 
         foreach ($menus as $key => $menu) {
             if (!isset($menu['sort_order'])) {

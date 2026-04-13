@@ -11,6 +11,7 @@ use App\Models\Review\ReviewSearch;
 use App\Services\Review\ReviewService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 
 class ReviewController extends BaseController
 {
@@ -24,10 +25,38 @@ class ReviewController extends BaseController
         $this->repository = $repository;
     }
 
-    public function index(): View
+    public function index(): View|RedirectResponse
     {
+        if (!$this->dashboardUserIsAdmin()) {
+            return redirect()->route('dashboard.reviews.mine');
+        }
+
         return $this->dashboardView('review.index', array_merge($this->service->getIndexViewData(), [
-            'createRoute' => $this->dashboardUserIsAdmin() ? route('dashboard.reviews.create') : null,
+            'createRoute' => route('dashboard.reviews.create'),
+        ]));
+    }
+
+    public function myIndex(): View
+    {
+        view()->share('subHeaderData', ['pageName' => 'review.my-index']);
+
+        $userId = (int) auth()->id();
+        $reviews = Review::query()
+            ->with(['reviewer:id,first_name,last_name,email'])
+            ->where('user_id', $userId)
+            ->orderByDesc('created_at')
+            ->get();
+
+        $avg = $reviews->avg('rating');
+        $stats = [
+            'count' => $reviews->count(),
+            'avg_rating' => $avg !== null ? round((float) $avg, 2) : null,
+            'latest_at' => $reviews->first()?->created_at,
+        ];
+
+        return $this->dashboardView('review.my-index', array_merge($this->service->getIndexViewData(), [
+            'reviews' => $reviews,
+            'stats' => $stats,
         ]));
     }
 
@@ -44,6 +73,8 @@ class ReviewController extends BaseController
 
     public function create(): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'review.form',
             vars: $this->service->getViewData()
@@ -63,9 +94,15 @@ class ReviewController extends BaseController
 
     public function show(Review $review): View
     {
+        $this->abortUnlessAdminOrOwnsUserId($review->user_id);
+
         return $this->dashboardView(
             view: 'review.form',
-            vars: $this->service->getViewData($review->id),
+            vars: array_merge($this->service->getViewData($review->id), [
+                'indexUrl' => $this->dashboardUserIsAdmin()
+                    ? route('dashboard.reviews.index')
+                    : route('dashboard.reviews.mine'),
+            ]),
             viewMode: 'show'
         );
     }

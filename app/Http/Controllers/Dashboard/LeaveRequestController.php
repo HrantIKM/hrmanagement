@@ -8,6 +8,7 @@ use App\Models\LeaveRequest\Enums\LeaveRequestStatus;
 use App\Models\LeaveRequest\Enums\LeaveRequestType;
 use App\Models\LeaveRequest\LeaveRequestSearch;
 use App\Models\LeaveRequest\LeaveRequest;
+use App\Models\RoleAndPermission\Enums\RoleType;
 use App\Services\LeaveRequest\LeaveRequestService;
 use App\Contracts\LeaveRequest\ILeaveRequestRepository;
 use Illuminate\Http\JsonResponse;
@@ -30,6 +31,7 @@ class LeaveRequestController extends BaseController
                 ->mapWithKeys(fn (string $v) => [$v => __('leaveRequest.type.' . $v)]),
             'leaveRequestStatuses' => collect(LeaveRequestStatus::ALL)
                 ->mapWithKeys(fn (string $v) => [$v => __('leaveRequest.status.' . $v)]),
+            'leaveRequestAdminFilters' => auth()->user()?->hasRole(RoleType::ADMIN) ?? false,
         ]);
     }
 
@@ -63,6 +65,8 @@ class LeaveRequestController extends BaseController
 
     public function show(LeaveRequest $leaveRequest): View
     {
+        $this->authorizeLeaveRequestAccess($leaveRequest);
+
         return $this->dashboardView(
             view: 'leave-request.form',
             vars: $this->service->getViewData($leaveRequest->id),
@@ -72,6 +76,9 @@ class LeaveRequestController extends BaseController
 
     public function edit(LeaveRequest $leaveRequest): View
     {
+        $this->authorizeLeaveRequestAccess($leaveRequest);
+        $this->authorizeEmployeeCanMutatePendingOnly($leaveRequest);
+
         return $this->dashboardView(
             view: 'leave-request.form',
             vars: $this->service->getViewData($leaveRequest->id),
@@ -81,6 +88,9 @@ class LeaveRequestController extends BaseController
 
     public function update(LeaveRequestRequest $request, LeaveRequest $leaveRequest): JsonResponse
     {
+        $this->authorizeLeaveRequestAccess($leaveRequest);
+        $this->authorizeEmployeeCanMutatePendingOnly($leaveRequest);
+
         $this->service->createOrUpdate($request->validated(), $leaveRequest->id);
 
         return $this->sendOkUpdated([
@@ -90,10 +100,49 @@ class LeaveRequestController extends BaseController
 
     public function destroy(LeaveRequest $leaveRequest): JsonResponse
     {
-        // If deleting other data except model use service
-        // $this->service->delete($leaveRequest->id);
-        $this->repository->destroy($leaveRequest->id);
+        $this->authorizeLeaveRequestAccess($leaveRequest);
+        $this->authorizeEmployeeCanMutatePendingOnly($leaveRequest);
+
+        $this->service->delete($leaveRequest->id);
 
         return $this->sendOkDeleted();
+    }
+
+    public function approve(LeaveRequest $leaveRequest): JsonResponse
+    {
+        abort_unless(auth()->user()?->hasRole(RoleType::ADMIN), 403);
+        $this->service->applyDecision($leaveRequest, LeaveRequestStatus::APPROVED);
+
+        return $this->sendOkUpdated([
+            'redirectUrl' => route('dashboard.leave-requests.index'),
+        ]);
+    }
+
+    public function reject(LeaveRequest $leaveRequest): JsonResponse
+    {
+        abort_unless(auth()->user()?->hasRole(RoleType::ADMIN), 403);
+        $this->service->applyDecision($leaveRequest, LeaveRequestStatus::REJECTED);
+
+        return $this->sendOkUpdated([
+            'redirectUrl' => route('dashboard.leave-requests.index'),
+        ]);
+    }
+
+    private function authorizeLeaveRequestAccess(LeaveRequest $leaveRequest): void
+    {
+        if (auth()->user()?->hasRole(RoleType::ADMIN)) {
+            return;
+        }
+
+        abort_unless((int) $leaveRequest->user_id === (int) auth()->id(), 403);
+    }
+
+    private function authorizeEmployeeCanMutatePendingOnly(LeaveRequest $leaveRequest): void
+    {
+        if (auth()->user()?->hasRole(RoleType::ADMIN)) {
+            return;
+        }
+
+        abort_unless($leaveRequest->status === LeaveRequestStatus::PENDING, 403);
     }
 }

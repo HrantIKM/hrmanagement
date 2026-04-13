@@ -1,3 +1,24 @@
+function userTableAvatarCell(row) {
+  const url = row.avatar_url;
+  const showHref = route('dashboard.users.show', row.id);
+  const size = 40;
+  const first = (row.first_name || '').charAt(0);
+  const last = (row.last_name || '').charAt(0);
+  let initials = (first + last).toUpperCase();
+  if (!initials) {
+    initials = (row.email || '?').slice(0, 2).toUpperCase();
+  }
+  const name = [row.first_name, row.last_name].filter(Boolean).join(' ').trim() || row.email || '';
+  const hue = (Number(row.id) || 0) * 37 % 360;
+  const titleAttr = name.replace(/"/g, '&quot;');
+
+  if (url) {
+    return `<a href="${showHref}" class="d-inline-block" title="${titleAttr}"><img src="${url}" alt="" width="${size}" height="${size}" class="rounded-circle border" style="object-fit:cover"/></a>`;
+  }
+
+  return `<a href="${showHref}" class="d-inline-flex align-items-center justify-content-center rounded-circle text-white text-decoration-none" style="width:${size}px;height:${size}px;background:hsl(${hue},52%,42%);font-size:${Math.round(size * 0.38)}px;font-weight:600" title="${titleAttr}">${initials}</a>`;
+}
+
 const options = {
   pathOptions: {
     searchPath: route('dashboard.users.getListData'),
@@ -12,9 +33,15 @@ const options = {
     position: 'title',
   },
 
-  actions: {
-    show: false,
+  columnsRender: {
+    avatar_url: {
+      render(data, type, row) {
+        return userTableAvatarCell(row);
+      },
+    },
   },
+
+  actions: {},
 };
 // eslint-disable-next-line no-new,no-undef
 new DataTable(options);

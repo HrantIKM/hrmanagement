@@ -118,7 +118,12 @@ class FileTempService extends FileService
         $directories = $disk->allDirectories();
 
         foreach ($directories as $directory) {
-            $directoryDate = Carbon::parse($directory);
+            try {
+                $directoryDate = Carbon::createFromFormat('d-m-Y', $directory);
+            } catch (\Throwable) {
+                continue;
+            }
+
             if (!$pastDay->lt($directoryDate)) {
                 $disk->deleteDirectory($directory);
             }

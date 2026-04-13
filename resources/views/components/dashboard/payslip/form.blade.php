@@ -7,7 +7,7 @@
              <x-dashboard.form._form
                 :action="$viewMode === 'add' ? route('dashboard.payslips.store') : route('dashboard.payslips.update', $payslip->id)"
                 :method="$viewMode === 'add' ? 'post' : 'put'"
-                :indexUrl="route('dashboard.payslips.index')"
+                :indexUrl="$indexUrl ?? route('dashboard.payslips.index')"
                 :viewMode="$viewMode"
             >
                 <div class="row">
@@ -73,6 +73,16 @@
                                     {{ __('label.pdf_path') }}
                                 </a>
                             </p>
+                        </div>
+                    </div>
+                @endif
+
+                @if($payslip->id)
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <a href="{{ route('dashboard.payslips.download', $payslip->id) }}" class="btn btn-outline-primary btn-sm">
+                                Download Generated PDF
+                            </a>
                         </div>
                     </div>
                 @endif

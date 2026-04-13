@@ -21,6 +21,7 @@ mix.combine([
   'resources/js/core/MultipleInputs.js',
   'resources/js/core/FileUploader.js',
   'resources/js/common/main.js',
+  'resources/js/common/notifications-bell.js',
 ], 'public/js/dashboard/bundle.js').minify('public/js/dashboard/bundle.js');
 
 mix.js('resources/js/app.js', 'public/js')

@@ -1,6 +1,11 @@
 $icon-color: #494b74;
 $icon-hover-color: #3699FF;
 
+.header {
+    padding-top: env(safe-area-inset-top, 0);
+    padding-right: max(12px, env(safe-area-inset-right, 0));
+}
+
 .svg-icons {
     transition: background-color 0.3s ease;
 
@@ -457,6 +462,74 @@ span.show-status-1 {
     }
 }
 
+/* Dashboard Home visual refresh */
+.dashboard-home {
+    .card {
+        border-radius: 14px;
+    }
+
+    .dashboard-home-hero {
+        background: linear-gradient(120deg, #f8faff 0%, #eef4ff 55%, #edf7ff 100%);
+        border: 1px solid #e6edff;
+    }
+
+    .dashboard-home-title {
+        font-weight: 700;
+        color: #1f2a44;
+    }
+
+    .dashboard-stat-card {
+        border: 1px solid #eef2f7;
+        transition: transform .2s ease, box-shadow .2s ease;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08) !important;
+        }
+    }
+
+    .dashboard-stat-label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        color: #667085;
+        margin-bottom: 8px;
+    }
+
+    .dashboard-stat-value {
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #1d4ed8;
+    }
+
+    .dashboard-stat-meta {
+        color: #667085;
+        font-size: 13px;
+        margin-top: 6px;
+    }
+
+    .dashboard-soft-progress {
+        height: 9px;
+        background: #edf2ff;
+        border-radius: 999px;
+        overflow: hidden;
+
+        .progress-bar {
+            border-radius: 999px;
+        }
+    }
+
+    .dashboard-activity-feed {
+        max-height: 420px;
+        overflow-y: auto;
+
+        .list-group-item {
+            border-color: #f1f5f9;
+        }
+    }
+}
+
 
 .ck-content {
     min-height: 200px;
@@ -657,4 +730,13 @@ textarea.form-control{
 
 .sticky-top {
     top: 121px;
+}
+
+.user-recent-card {
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+        box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
+        border-color: #dee2e6 !important;
+    }
 }

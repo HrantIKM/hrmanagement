@@ -4,8 +4,10 @@ namespace App\Models\Meeting;
 
 use App\Models\Base\BaseModel;
 use App\Models\Meeting\Enums\MeetingStatus;
+use App\Models\Room\Room;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Meeting extends BaseModel
@@ -20,6 +22,7 @@ class Meeting extends BaseModel
     protected $fillable = [
         'title',
         'description',
+        'room_id',
         'location',
         'start_at',
         'end_at',
@@ -37,6 +40,11 @@ class Meeting extends BaseModel
             'start_at' => 'datetime',
             'end_at' => 'datetime',
         ];
+    }
+
+    public function room(): BelongsTo
+    {
+        return $this->belongsTo(Room::class);
     }
 
     public function participants(): BelongsToMany

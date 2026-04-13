@@ -22,6 +22,7 @@
                 <x-dashboard.datatable._table>
                    <th data-key="id">{{ __('label.id') }}</th>
                    <th data-key="title">{{ __('label.title') }}</th>
+                   <th data-key="room" data-orderable="false">{{ __('label.room_id') }}</th>
                    <th data-key="status_display" data-orderable="false">{{ __('label.status') }}</th>
                    <th data-key="start_at">{{ __('label.start_at') }}</th>
                    <th data-key="end_at">{{ __('label.end_at') }}</th>

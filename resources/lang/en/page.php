@@ -5,6 +5,13 @@ return [
         'index' => [
             'title' => 'Users',
             'create' => 'Create User',
+            'stats_total' => 'Total employees',
+            'stats_active' => 'Active',
+            'stats_on_leave' => 'On leave',
+            'stats_with_photo' => 'With profile photo',
+            'recent_heading' => 'Recently added',
+            'recent_empty' => 'No employees yet.',
+            'quick_exports' => 'Exports',
         ],
 
         'form' => [
@@ -57,6 +64,24 @@ return [
             'show' => ['title' => 'Skill', 'description' => ''],
         ],
         'index' => ['title' => 'Skills', 'create' => 'Create Skill', 'description' => ''],
+    ],
+
+    'holiday' => [
+        'form' => [
+            'add' => ['title' => 'Create Holiday', 'description' => ''],
+            'edit' => ['title' => 'Edit Holiday', 'description' => ''],
+            'show' => ['title' => 'Holiday', 'description' => ''],
+        ],
+        'index' => ['title' => 'Holidays', 'create' => 'Create Holiday', 'description' => ''],
+    ],
+
+    'room' => [
+        'form' => [
+            'add' => ['title' => 'Create Room', 'description' => ''],
+            'edit' => ['title' => 'Edit Room', 'description' => ''],
+            'show' => ['title' => 'Room', 'description' => ''],
+        ],
+        'index' => ['title' => 'Rooms', 'create' => 'Create Room', 'description' => ''],
     ],
 
     'vacancy' => [
@@ -119,7 +144,20 @@ return [
             'edit' => ['title' => 'Edit Review', 'description' => ''],
             'show' => ['title' => 'Review', 'description' => ''],
         ],
-        'index' => ['title' => 'Reviews', 'create' => 'Create Review', 'description' => ''],
+        'index' => ['title' => 'Reviews (HR)', 'create' => 'Create Review', 'description' => ''],
+        'my-index' => [
+            'title' => 'My performance feedback',
+            'description' => 'Feedback others have shared about your work.',
+        ],
+    ],
+
+    'notification' => [
+        'index' => [
+            'title' => 'Notifications',
+            'empty' => 'You have no notifications yet.',
+            'mark_read' => 'Mark read',
+            'mark_all_read' => 'Mark all read',
+        ],
     ],
 
     'meeting' => [
@@ -149,6 +187,15 @@ return [
         'index' => ['title' => 'Leave Requests', 'create' => 'Create Leave Request', 'description' => ''],
     ],
 
+    'leave-balance' => [
+        'form' => [
+            'add' => ['title' => 'Create Leave Balance', 'description' => ''],
+            'edit' => ['title' => 'Edit Leave Balance', 'description' => ''],
+            'show' => ['title' => 'Leave Balance', 'description' => ''],
+        ],
+        'index' => ['title' => 'Leave Balances', 'create' => 'Create Leave Balance', 'description' => ''],
+    ],
+
     'attendance' => [
         'form' => [
             'add' => ['title' => 'Create Attendance', 'description' => ''],
@@ -174,6 +221,7 @@ return [
             'show' => ['title' => 'Payslip', 'description' => ''],
         ],
         'index' => ['title' => 'Payslips', 'create' => 'Create Payslip', 'description' => ''],
+        'my-index' => ['title' => 'My payslips', 'create' => '', 'description' => ''],
     ],
 
     'article' => [

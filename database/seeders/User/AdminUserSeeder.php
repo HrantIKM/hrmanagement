@@ -20,12 +20,14 @@ class AdminUserSeeder extends Seeder
      */
     public function run()
     {
-        $user = User::query()->firstOrCreate([
-            'first_name' => 'Admin',
-            'last_name' => 'Admin',
-            'email' => 'admin@admin.com',
-            'password' => Hash::make('m67u12n7i938c789h1429v'),
-        ]);
+        $user = User::query()->firstOrCreate(
+            ['email' => 'admin@admin.com'],
+            [
+                'first_name' => 'Admin',
+                'last_name' => 'Admin',
+                'password' => Hash::make('m67u12n7i938c789h1429v'),
+            ]
+        );
 
         $user->assignRole(RoleType::ADMIN);
     }

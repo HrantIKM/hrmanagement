@@ -11,6 +11,7 @@ use App\Models\Candidate\CandidateSearch;
 use App\Services\Candidate\CandidateService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
 
 class CandidateController extends BaseController
 {
@@ -58,12 +59,24 @@ class CandidateController extends BaseController
         ]);
     }
 
+    public function resume(Candidate $candidate)
+    {
+        abort_unless($candidate->resume_path, 404);
+        abort_unless(Storage::disk('public')->exists($candidate->resume_path), 404);
+
+        return Storage::disk('public')->response(
+            $candidate->resume_path,
+            basename($candidate->resume_path),
+            ['Content-Type' => 'application/pdf']
+        );
+    }
+
     public function show(Candidate $candidate): View
     {
         return $this->dashboardView(
-            view: 'candidate.form',
-            vars: $this->service->getViewData($candidate->id),
-            viewMode: 'show'
+            view: 'candidate.show',
+            vars: $this->service->getDetailViewData($candidate->id),
+            viewMode: 'show',
         );
     }
 

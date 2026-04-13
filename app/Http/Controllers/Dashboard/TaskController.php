@@ -15,6 +15,7 @@ use App\Models\Task\TaskSearch;
 use App\Services\Task\TaskService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class TaskController extends BaseController
 {
@@ -80,10 +81,51 @@ class TaskController extends BaseController
         $this->abortUnlessAdminOrOwnsUserId($task->user_id);
 
         return $this->dashboardView(
-            view: 'task.form',
-            vars: $this->service->getViewData($task->id),
-            viewMode: 'show'
+            view: 'task.show',
+            vars: $this->service->getIssueViewData($task->id)
         );
+    }
+
+    public function board(): View
+    {
+        return $this->dashboardView('task.board', [
+            'taskStatusesOrdered' => [
+                TaskStatus::BACKLOG,
+                TaskStatus::TODO,
+                TaskStatus::IN_PROGRESS,
+                TaskStatus::READY_TO_TEST,
+                TaskStatus::DONE,
+            ],
+        ]);
+    }
+
+    public function boardData(): JsonResponse
+    {
+        $query = Task::with(['project:id,name', 'user:id,first_name,last_name,email'])
+            ->select(['id', 'title', 'status', 'priority', 'project_id', 'user_id', 'due_date']);
+
+        if (!$this->dashboardUserIsAdmin()) {
+            $query->where('user_id', auth()->id());
+        }
+
+        return response()->json($query->orderBy('id')->get());
+    }
+
+    public function move(Request $request, Task $task): JsonResponse
+    {
+        $this->abortUnlessAdminOrOwnsUserId($task->user_id);
+
+        $validated = $request->validate([
+            'status' => 'required|string',
+        ]);
+
+        abort_unless(in_array($validated['status'], TaskStatus::ALL, true), 422);
+
+        $this->repository->update($task->id, [
+            'status' => $validated['status'],
+        ]);
+
+        return $this->sendOkUpdated();
     }
 
     public function edit(Task $task): View

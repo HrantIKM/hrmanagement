@@ -12,6 +12,7 @@ class MeetingRequest extends FormRequest
     {
         $this->merge([
             'description' => $this->description === '' ? null : $this->description,
+            'room_id' => $this->room_id === '' ? null : $this->room_id,
             'location' => $this->location === '' ? null : $this->location,
             'summary' => $this->summary === '' ? null : $this->summary,
         ]);
@@ -22,6 +23,7 @@ class MeetingRequest extends FormRequest
         return [
             'title' => 'required|string_with_max',
             'description' => 'nullable|string_with_max',
+            'room_id' => 'nullable|exist_validator:rooms,id',
             'location' => 'nullable|string_with_max',
             'start_at' => 'required|date',
             'end_at' => [

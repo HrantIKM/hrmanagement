@@ -4,6 +4,7 @@ namespace App\Http\Requests\Review;
 
 use App\Http\Requests\Core\DatatableSearchRequest;
 use App\Models\Review\Enums\ReviewPeriod;
+use App\Models\Review\Enums\ReviewPerspective;
 use Illuminate\Validation\Rule;
 
 class ReviewSearchRequest extends DatatableSearchRequest
@@ -15,6 +16,7 @@ class ReviewSearchRequest extends DatatableSearchRequest
             'f.user_id' => 'nullable|integer_with_max|exists:users,id',
             'f.reviewer_id' => 'nullable|integer_with_max|exists:users,id',
             'f.review_period' => ['nullable', Rule::in(ReviewPeriod::ALL)],
+            'f.review_perspective' => ['nullable', Rule::in(ReviewPerspective::ALL)],
         ];
     }
 }

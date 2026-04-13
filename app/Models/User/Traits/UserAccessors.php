@@ -21,4 +21,11 @@ trait UserAccessors
                 : ''
         );
     }
+
+    public function avatarUrl(): Attribute
+    {
+        return new Attribute(
+            get: fn () => $this->avatar?->file_url
+        );
+    }
 }

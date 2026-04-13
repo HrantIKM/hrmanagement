@@ -17,10 +17,13 @@ class RoleAndPermissionSeeder extends Seeder
     public function run()
     {
         foreach (RoleType::ALL as $role) {
-            Role::query()->create([
-                'name' => $role,
-                'guard_name' => 'web',
-            ]);
+            Role::query()->firstOrCreate(
+                [
+                    'name' => $role,
+                    'guard_name' => 'web',
+                ],
+                []
+            );
         }
     }
 }

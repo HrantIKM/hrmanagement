@@ -19,13 +19,17 @@ class MeetingSearch extends Search
     {
         $filters = $this->filters;
 
-        return Meeting::select([
-            'id',
-            'title',
-            'status',
-            'start_at',
-            'end_at',
-        ])
+        return Meeting::query()
+            ->with(['room:id,name'])
+            ->select([
+                'id',
+                'title',
+                'status',
+                'room_id',
+                'location',
+                'start_at',
+                'end_at',
+            ])
             ->when(!empty($filters['search']), function ($query) use ($filters) {
                 $query->likeOr(['id', 'title', 'description', 'location', 'summary'], $filters);
             })

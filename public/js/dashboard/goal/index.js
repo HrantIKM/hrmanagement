@@ -10,6 +10,17 @@ const options = {
     user: 'name',
   },
 
+  columnsRender: {
+    progress_percent: {
+      render(data) {
+        if (data === null || data === undefined || data === '') {
+          return '—';
+        }
+        return `${data}%`;
+      },
+    },
+  },
+
   actions: {
     show: false,
   },

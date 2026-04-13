@@ -31,6 +31,7 @@
                    <th data-key="type_display" data-orderable="false">{{ __('label.goal_type') }}</th>
                    <th data-key="target_value">{{ __('label.target_value') }}</th>
                    <th data-key="current_value">{{ __('label.current_value') }}</th>
+                   <th data-key="progress_percent" data-orderable="false">{{ __('label.progress_percent') }}</th>
                    <th data-key="deadline">{{ __('label.deadline') }}</th>
                    <th class="text-center">{{ __('label.actions') }}</th>
                 </x-dashboard.datatable._table>

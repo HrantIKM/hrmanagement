@@ -14,35 +14,52 @@ use Database\Seeders\User\AdminUserSeeder;
 use Database\Seeders\User\UserSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('roles')->truncate();
-        DB::table('permissions')->truncate();
-        DB::table('model_has_permissions')->truncate();
-        DB::table('model_has_roles')->truncate();
-        DB::table('role_has_permissions')->truncate();
-        DB::table('timesheets')->truncate();
-        DB::table('tasks')->truncate();
-        DB::table('project_user')->truncate();
-        DB::table('reviews')->truncate();
-        DB::table('payslips')->truncate();
-        DB::table('salaries')->truncate();
-        DB::table('goals')->truncate();
-        DB::table('skill_user')->truncate();
-        User::truncate();
-        DB::table('candidate_skill')->truncate();
-        DB::table('skill_vacancy')->truncate();
-        DB::table('applications')->truncate();
-        DB::table('candidates')->truncate();
-        DB::table('vacancies')->truncate();
-        DB::table('skills')->truncate();
-        DB::table('positions')->truncate();
-        DB::table('departments')->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        $shouldResetAll = (bool) env('SEED_TRUNCATE_ALL', false);
+        if ($shouldResetAll) {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+            $tables = [
+                'roles',
+                'permissions',
+                'model_has_permissions',
+                'model_has_roles',
+                'role_has_permissions',
+                'timesheets',
+                'tasks',
+                'project_user',
+                'reviews',
+                'payslips',
+                'salaries',
+                'goals',
+                'skill_user',
+                'candidate_skill',
+                'skill_vacancy',
+                'applications',
+                'candidates',
+                'vacancies',
+                'skills',
+                'positions',
+                'departments',
+            ];
+
+            foreach ($tables as $table) {
+                if (Schema::hasTable($table)) {
+                    DB::table($table)->truncate();
+                }
+            }
+
+            if (Schema::hasTable('users')) {
+                User::truncate();
+            }
+
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        }
 
         $this->call([
             RoleAndPermissionSeeder::class,

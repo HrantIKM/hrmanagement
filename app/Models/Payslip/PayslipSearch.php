@@ -21,7 +21,7 @@ class PayslipSearch extends Search
     {
         $filters = $this->filters;
 
-        return Payslip::with(['user'])->select([
+        $query = Payslip::with(['user'])->select([
             'id',
             'period_month',
             'period_year',
@@ -31,14 +31,18 @@ class PayslipSearch extends Search
             'net_total',
             'pdf_path',
             'user_id',
-        ])
+        ]);
+
+        $this->scopeToAssigneeUnlessAdmin($query);
+
+        return $query
             ->when(!empty($filters['search']), function ($query) use ($filters) {
                 $query->likeOr(['id'], $filters);
             })
             ->when(!empty($filters['id']), function ($query) use ($filters) {
                 $query->where('id', $filters['id']);
             })
-            ->when(!empty($filters['user_id']), function ($query) use ($filters) {
+            ->when(!empty($filters['user_id']) && $this->dashboardUserIsAdmin(), function ($query) use ($filters) {
                 $query->where('user_id', $filters['user_id']);
             })
             ->when(!empty($filters['period_month']), function ($query) use ($filters) {

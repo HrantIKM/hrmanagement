@@ -6,11 +6,16 @@ use App\Contracts\User\IUserRepository;
 use App\Http\Controllers\Dashboard\BaseController;
 use App\Http\Requests\User\UserRequest;
 use App\Http\Requests\User\UserSearchRequest;
+use App\Exports\UsersExport;
+use App\Models\User\Enums\EmploymentStatus;
 use App\Models\User\User;
 use App\Models\User\UserSearch;
 use App\Services\User\UserService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UserController extends BaseController
 {
@@ -24,7 +29,23 @@ class UserController extends BaseController
 
     public function index(): View
     {
-        return $this->dashboardView('user.index');
+        $totalUsers = User::count();
+        $activeUsers = User::where('employment_status', EmploymentStatus::ACTIVE)->count();
+        $onLeaveUsers = User::where('employment_status', EmploymentStatus::ON_LEAVE)->count();
+        $withAvatar = User::whereHas('avatar')->count();
+
+        $recentUsers = User::with(['avatar', 'department', 'position'])
+            ->orderByDesc('created_at')
+            ->limit(6)
+            ->get();
+
+        return $this->dashboardView('user.index', compact(
+            'totalUsers',
+            'activeUsers',
+            'onLeaveUsers',
+            'withAvatar',
+            'recentUsers'
+        ));
     }
 
     public function getListData(UserSearchRequest $request): array
@@ -87,5 +108,38 @@ class UserController extends BaseController
         $this->service->delete($user->id);
 
         return $this->sendOkDeleted();
+    }
+
+    public function exportExcel(): BinaryFileResponse
+    {
+        return Excel::download(new UsersExport(), 'employees-report.xlsx');
+    }
+
+    public function exportCsv(): StreamedResponse
+    {
+        $fileName = 'employees-report.csv';
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename={$fileName}",
+        ];
+
+        return response()->stream(function () {
+            $out = fopen('php://output', 'w');
+            fputcsv($out, ['ID', 'Name', 'Email', 'Department', 'Position', 'Employment Status']);
+
+            User::query()->with(['department:id,name', 'position:id,title'])->chunk(300, function ($rows) use ($out) {
+                foreach ($rows as $user) {
+                    fputcsv($out, [
+                        $user->id,
+                        $user->name,
+                        $user->email,
+                        $user->department?->name,
+                        $user->position?->title,
+                        $user->employment_status,
+                    ]);
+                }
+            });
+            fclose($out);
+        }, 200, $headers);
     }
 }

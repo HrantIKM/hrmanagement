@@ -29,6 +29,7 @@
                    <th data-key="email">{{ __('label.email') }}</th>
                    <th data-key="vacancy" data-orderable="false">{{ __('label.vacancy_id') }}</th>
                    <th data-key="match_score">{{ __('label.match_score') }}</th>
+                   <th data-key="resume_path">{{ __('label.resume') }}</th>
                    <th data-key="skills" data-orderable="false">{{ __('label.skill_ids') }}</th>
                    <th class="text-center">{{ __('label.actions') }}</th>
                 </x-dashboard.datatable._table>

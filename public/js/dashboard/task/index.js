@@ -12,7 +12,7 @@ const options = {
   },
 
   actions: {
-      show: false,
+      show: true,
   },
 };
 // eslint-disable-next-line no-new,no-undef

@@ -22,7 +22,7 @@ class UserSearch extends Search
     {
         $filters = $this->filters;
 
-        return User::with(['roles', 'department', 'position'])->select([
+        return User::with(['roles', 'department', 'position', 'avatar'])->select([
             'id',
             'first_name',
             'last_name',

@@ -8,11 +8,14 @@ use App\Models\Base\Traits\ModelHelperFunctions;
 use App\Models\Scopes\Base\DeletedScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class BaseModel extends Model
 {
     use BaseModelScopes;
     use ModelHelperFunctions;
+    use LogsActivity;
 
     final public const TRUE = 1;
     final public const FALSE = 0;
@@ -85,5 +88,13 @@ class BaseModel extends Model
     public function setFileConfigName(): string
     {
         return static::getClassName();
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->logFillable();
     }
 }

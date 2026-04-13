@@ -1,5 +1,6 @@
 @php
     use App\Models\Review\Enums\ReviewPeriod;
+    use App\Models\Review\Enums\ReviewPerspective;
 @endphp
 <x-dashboard.layouts.app>
     <div class="container-fluid">
@@ -7,7 +8,7 @@
              <x-dashboard.form._form
                 :action="$viewMode === 'add' ? route('dashboard.reviews.store') : route('dashboard.reviews.update', $review->id)"
                 :method="$viewMode === 'add' ? 'post' : 'put'"
-                :indexUrl="route('dashboard.reviews.index')"
+                :indexUrl="$indexUrl ?? route('dashboard.reviews.index')"
                 :viewMode="$viewMode"
             >
                 <div class="row">
@@ -32,6 +33,15 @@
                                                       :value="$review->review_period ?? ReviewPeriod::Q1" class="select2"/>
                         </div>
                     </div>
+                    <div class="col-lg-6">
+                        <div class="form-group required">
+                            <x-dashboard.form._select name="review_perspective" :data="$reviewPerspectiveOptions"
+                                                      :value="$review->review_perspective ?? ReviewPerspective::MANAGER" class="select2"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
                     <div class="col-lg-6">
                         <div class="form-group required">
                             <x-dashboard.form._input name="rating" type="number" step="0.01" min="1" max="5" :value="$review->rating"/>

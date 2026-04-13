@@ -2,7 +2,7 @@
 
 return [
     'status' => [
-        'open' => 'Open',
-        'closed' => 'Closed',
+        'open' => 'Active',
+        'closed' => 'Inactive',
     ],
 ];

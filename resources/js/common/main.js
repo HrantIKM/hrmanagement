@@ -90,10 +90,6 @@ function minimizeMenu() {
   $('.brand-toggle').click(() => {
     $('.page').toggleClass('minimaize-menu');
   });
-  $('.open-menu').click(() => {
-    $('.page').toggleClass('left-menu-opened');
-    $('.open-menu').toggleClass('open-menu-opened');
-  });
 }
 
 // ClassicEditor
@@ -168,10 +164,26 @@ function datetimePickerInit() {
 }
 
 function openMenu() {
-  $('.open-menu').click(() => {
-    $('.page').toggleClass('left-menu-opened');
-    $('.open-menu').toggleClass('open-menu-opened');
-  });
+  $('.open-menu')
+    .off('click.menuToggle')
+    .on('click.menuToggle', function (e) {
+      e.stopPropagation();
+      $('.page').toggleClass('left-menu-opened');
+      $('.open-menu').toggleClass('open-menu-opened');
+    });
+
+  $(document)
+    .off('click.menuBackdrop')
+    .on('click.menuBackdrop', function (e) {
+      if (!$('.page').hasClass('left-menu-opened')) {
+        return;
+      }
+      if ($(e.target).closest('.left-menu').length || $(e.target).closest('.open-menu').length) {
+        return;
+      }
+      $('.page').removeClass('left-menu-opened');
+      $('.open-menu').removeClass('open-menu-opened');
+    });
 }
 
 function copyMlInfo() {

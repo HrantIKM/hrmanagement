@@ -3,6 +3,9 @@
         <li class="menu-item-group">{{ $key }}</li>
     @endif
     @foreach($menus as $menu)
+        @if(in_array($menu->slug, ['reviews', 'payslips'], true) && !(auth()->user()?->hasRole(\App\Models\RoleAndPermission\Enums\RoleType::ADMIN) ?? false))
+            @continue
+        @endif
         @if($menu->subMenu->count())
             @php
                 $hasActiveSubMenu = $menu->subMenu->contains(fn ($menu) => Str::is('*'.$menu->url.'*', request()->path()));
@@ -33,8 +36,17 @@
                 </div>
             </li>
         @elseif($menu->url)
+            @php
+                $activeMenu = match ($menu->slug) {
+                    'reviews' => routeIs('dashboard.reviews.*') && !routeIs('dashboard.reviews.mine'),
+                    'reviews-mine' => routeIs('dashboard.reviews.mine'),
+                    'payslips' => routeIs('dashboard.payslips.*') && !routeIs('dashboard.payslips.mine'),
+                    'payslips-mine' => routeIs('dashboard.payslips.mine'),
+                    default => request()->is('*'.$menu->url) || request()->is('*'.$menu->url.'/*'),
+                };
+            @endphp
             <li class="menu-item ">
-                <a href="{{ urlWithLng($menu->url) }}" class="menu-link {{(request()->is('*'.$menu->url.'*')) ? 'active' : ''}}">
+                <a href="{{ urlWithLng($menu->url) }}" class="menu-link {{ $activeMenu ? 'active' : '' }}">
                 <span class="svg-icon">
                     <i class="{{ $menu->icon }}"></i>
                 </span>

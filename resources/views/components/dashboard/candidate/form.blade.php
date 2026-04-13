@@ -31,7 +31,12 @@
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="form-group">
-                            <x-dashboard.form._input name="resume_path" :value="$candidate->resume_path"/>
+                            <x-dashboard.form._input name="resume" type="file" accept="application/pdf"/>
+                            @if($candidate->resume_url)
+                                <a href="{{ $candidate->resume_url }}" target="_blank" class="d-inline-block mt-2">
+                                    Open current resume PDF
+                                </a>
+                            @endif
                         </div>
                     </div>
                     <div class="col-lg-6">

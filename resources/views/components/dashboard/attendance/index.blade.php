@@ -4,6 +4,8 @@
             <x-dashboard.layouts.partials.card-header :createRoute="route('dashboard.attendances.create')"/>
 
             <div class="card-body">
+                <div id="attendance-calendar" class="mb-4" data-feed-url="{{ route('dashboard.attendances.calendarFeed') }}"></div>
+
                 <x-dashboard.datatable._filters_form>
                     <div class="col-md-4 form-group">
                         <x-dashboard.form._input name="id" type="number"/>
@@ -38,6 +40,7 @@
     </div>
 
     <x-slot name="scripts">
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
         <script src="{{ asset('/js/dashboard/attendance/index.js') }}"></script>
     </x-slot>
 </x-dashboard.layouts.app>

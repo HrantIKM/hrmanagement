@@ -9,9 +9,11 @@
                         <x-dashboard.form._input name="id" type="number"/>
                     </div>
 
+                    @if(!empty($leaveRequestAdminFilters))
                     <div class="col-md-4 form-group">
                         <x-dashboard.form._input name="user_id" type="number"/>
                     </div>
+                    @endif
 
                     <div class="col-md-4 form-group">
                         <x-dashboard.form._select name="type" allowClear defaultOption

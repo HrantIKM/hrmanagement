@@ -41,7 +41,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="form-group">
-                            <x-dashboard.form._textarea name="description" :value="$vacancy->description" rows="6"/>
+                            <x-dashboard.form._textarea name="description" :value="$vacancy->description" rows="8" id="vacancy-description-editor"/>
                         </div>
                     </div>
                 </div>

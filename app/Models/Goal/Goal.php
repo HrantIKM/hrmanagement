@@ -15,6 +15,7 @@ class Goal extends BaseModel
      */
     protected $appends = [
         'type_display',
+        'progress_percent',
     ];
 
     /**
@@ -53,6 +54,24 @@ class Goal extends BaseModel
             get: fn () => $this->type
                 ? __('goal.type.' . $this->type)
                 : ''
+        );
+    }
+
+    /**
+     * KPI-style completion vs target (null when target is missing or non-positive).
+     */
+    protected function progressPercent(): Attribute
+    {
+        return new Attribute(
+            get: function () {
+                $target = (float) ($this->target_value ?? 0);
+                if ($target <= 0) {
+                    return null;
+                }
+                $current = (float) ($this->current_value ?? 0);
+
+                return min(100.0, round(($current / $target) * 100, 1));
+            }
         );
     }
 }

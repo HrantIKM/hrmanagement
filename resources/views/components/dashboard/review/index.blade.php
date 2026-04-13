@@ -23,6 +23,11 @@
                         <x-dashboard.form._select name="review_period" allowClear defaultOption
                                                   :data="$reviewPeriodOptions" class="select2"/>
                     </div>
+
+                    <div class="col-md-4 col-lg-2 form-group">
+                        <x-dashboard.form._select name="review_perspective" allowClear defaultOption
+                                                  :data="$reviewPerspectiveOptions" class="select2"/>
+                    </div>
                 </x-dashboard.datatable._filters_form>
 
                 <x-dashboard.datatable._table>
@@ -30,6 +35,7 @@
                    <th data-key="user" data-orderable="false">{{ __('label.user') }}</th>
                    <th data-key="reviewer" data-orderable="false">{{ __('label.reviewer_id') }}</th>
                    <th data-key="review_period_display" data-orderable="false">{{ __('label.review_period') }}</th>
+                   <th data-key="review_perspective_display" data-orderable="false">{{ __('label.review_perspective') }}</th>
                    <th data-key="rating">{{ __('label.rating') }}</th>
                    <th class="text-center">{{ __('label.actions') }}</th>
                 </x-dashboard.datatable._table>

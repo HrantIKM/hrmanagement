@@ -1,0 +1,92 @@
+.leave-balance-summary {
+  .leave-balance-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #fff 50%, #f1f5f9 100%);
+    border: 1px solid rgba(15, 23, 42, 0.06) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.08) !important;
+    }
+  }
+
+  .leave-balance-card__year {
+    display: inline-block;
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #0f172a;
+    line-height: 1.2;
+  }
+
+  .leave-balance-ring {
+    --used-pct: 0;
+    --ring-color: #198754;
+
+    position: relative;
+    width: 5.5rem;
+    height: 5.5rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: conic-gradient(
+      var(--ring-color) calc(var(--used-pct) * 1%),
+      #e2e8f0 0
+    );
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 0 6px #fff;
+  }
+
+  .leave-balance-ring__label {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1;
+  }
+
+  .leave-balance-ring__unit {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #64748b;
+    margin-top: 0.15rem;
+  }
+
+  .leave-balance-stat {
+    text-align: center;
+    padding: 0.65rem 0.5rem;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(15, 23, 42, 0.06);
+  }
+
+  .leave-balance-stat__value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+  }
+
+  .leave-balance-stat__label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    margin-top: 0.2rem;
+  }
+
+  .leave-balance-progress {
+    height: 0.5rem;
+    border-radius: 999px;
+    overflow: hidden;
+    background: #e2e8f0;
+  }
+
+  .leave-balance-progress__bar {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.35s ease;
+  }
+}

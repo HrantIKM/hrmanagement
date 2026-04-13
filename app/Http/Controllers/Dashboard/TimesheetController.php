@@ -14,6 +14,7 @@ use App\Models\Timesheet\TimesheetSearch;
 use App\Services\Timesheet\TimesheetService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class TimesheetController extends BaseController
 {
@@ -48,11 +49,21 @@ class TimesheetController extends BaseController
         ];
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
+        $defaults = [
+            'task_id' => $request->filled('task_id') ? (int) $request->input('task_id') : null,
+            'user_id' => $request->filled('user_id') ? (int) $request->input('user_id') : null,
+            'date' => $request->input('date'),
+        ];
+
+        if (!$this->dashboardUserIsAdmin()) {
+            $defaults['user_id'] = (int) auth()->id();
+        }
+
         return $this->dashboardView(
             view: 'timesheet.form',
-            vars: $this->service->getViewData()
+            vars: $this->service->getViewData(defaults: $defaults)
         );
     }
 
