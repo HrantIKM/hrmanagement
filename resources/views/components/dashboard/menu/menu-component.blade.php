@@ -3,7 +3,10 @@
         <li class="menu-item-group">{{ $key }}</li>
     @endif
     @foreach($menus as $menu)
-        @if(in_array($menu->slug, ['reviews', 'payslips'], true) && !(auth()->user()?->hasRole(\App\Models\RoleAndPermission\Enums\RoleType::ADMIN) ?? false))
+        @if(in_array($menu->slug, ['reviews', 'payslips', 'candidates', 'vacancies', 'positions'], true) && !(auth()->user()?->hasRole(\App\Models\RoleAndPermission\Enums\RoleType::ADMIN) ?? false))
+            @continue
+        @endif
+        @if($menu->slug === 'messages')
             @continue
         @endif
         @if($menu->subMenu->count())

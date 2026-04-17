@@ -21,6 +21,7 @@ use App\Models\Holiday\Holiday;
 use App\Models\RoleAndPermission\Enums\RoleType;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 class AttendanceController extends BaseController
 {
@@ -38,9 +39,20 @@ class AttendanceController extends BaseController
 
     public function index(): View
     {
+        $todayAttendance = Attendance::query()
+            ->where('user_id', (int) Auth::id())
+            ->whereDate('date', now()->toDateString())
+            ->first();
+
+        $hasClockIn = $todayAttendance?->clock_in !== null;
+        $hasClockOut = $todayAttendance?->clock_out !== null;
+
         return $this->dashboardView('attendance.index', [
             'attendanceStatuses' => collect(AttendanceStatus::ALL)
                 ->mapWithKeys(fn (string $v) => [$v => __('attendance.status.' . $v)]),
+            'todayAttendance' => $todayAttendance,
+            'canClockIn' => !$hasClockIn,
+            'canClockOut' => $hasClockIn && !$hasClockOut,
         ]);
     }
 
@@ -108,9 +120,15 @@ class AttendanceController extends BaseController
         return $this->sendOkDeleted();
     }
 
-    public function clockIn(): JsonResponse
+    public function clockIn(Request $request): JsonResponse|RedirectResponse
     {
         $attendance = $this->service->clockIn((int) Auth::id());
+
+        if (!$request->expectsJson()) {
+            return redirect()
+                ->route('dashboard.attendances.index')
+                ->with('success', 'Clock-in registered.');
+        }
 
         return response()->json([
             'status' => 'OK',
@@ -119,15 +137,27 @@ class AttendanceController extends BaseController
         ]);
     }
 
-    public function clockOut(): JsonResponse
+    public function clockOut(Request $request): JsonResponse|RedirectResponse
     {
         $attendance = $this->service->clockOut((int) Auth::id());
 
         if (!$attendance) {
+            if (!$request->expectsJson()) {
+                return redirect()
+                    ->route('dashboard.attendances.index')
+                    ->with('error', 'No clock-in found for today.');
+            }
+
             return response()->json([
                 'status' => 'ERROR',
                 'message' => 'No clock-in found for today.',
             ], 422);
+        }
+
+        if (!$request->expectsJson()) {
+            return redirect()
+                ->route('dashboard.attendances.index')
+                ->with('success', 'Clock-out registered.');
         }
 
         return response()->json([

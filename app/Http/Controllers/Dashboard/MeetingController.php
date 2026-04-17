@@ -39,6 +39,8 @@ class MeetingController extends BaseController
             'meetingStatuses' => collect(MeetingStatus::ALL)
                 ->mapWithKeys(fn (string $v) => [$v => __('meeting.status.' . $v)]),
             'createRoute' => route('dashboard.meetings.create'),
+            'calendarRoute' => route('dashboard.meetings.calendar'),
+            'meetingStats' => $this->meetingStats(),
         ]);
     }
 
@@ -108,7 +110,28 @@ class MeetingController extends BaseController
 
     public function calendar(): View
     {
-        return $this->dashboardView('meeting.calendar');
+        return $this->dashboardView('meeting.calendar', [
+            'meetingStats' => $this->meetingStats(),
+            'meetingsTableRoute' => route('dashboard.meetings.index'),
+        ]);
+    }
+
+    /**
+     * @return array{total: int, active: int, completed: int, cancelled: int}
+     */
+    protected function meetingStats(): array
+    {
+        $total = Meeting::count();
+        $active = Meeting::whereIn('status', [MeetingStatus::SCHEDULED, MeetingStatus::IN_PROGRESS])->count();
+        $completed = Meeting::where('status', MeetingStatus::COMPLETED)->count();
+        $cancelled = Meeting::where('status', MeetingStatus::CANCELLED)->count();
+
+        return [
+            'total' => $total,
+            'active' => $active,
+            'completed' => $completed,
+            'cancelled' => $cancelled,
+        ];
     }
 
     public function calendarFeed(Request $request): JsonResponse
@@ -185,9 +208,17 @@ class MeetingController extends BaseController
         return $this->sendOkUpdated();
     }
 
-    public function createActionItems(Meeting $meeting): JsonResponse
+    public function createActionItems(Request $request, Meeting $meeting): JsonResponse
     {
-        $count = $this->service->convertMinutesToTasks($meeting);
+        $data = $request->validate([
+            'summary' => 'nullable|string|max:20000',
+        ]);
+
+        $summaryText = $request->has('summary')
+            ? (string) ($data['summary'] ?? '')
+            : (string) ($meeting->summary ?? '');
+
+        $count = $this->service->convertMinutesToTasks($meeting, $summaryText);
 
         return response()->json([
             'status' => 'OK',

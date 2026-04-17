@@ -1,6 +1,27 @@
 <x-dashboard.layouts.app>
-    <div class="container-fluid">
-        <div class="card mb-4">
+    <div class="container-fluid candidates-page">
+        <section class="candidates-hero mb-4">
+            <div>
+                <h2 class="candidates-hero__title mb-1">Talent Pipeline</h2>
+                <p class="candidates-hero__subtitle mb-0">Discover, compare, and shortlist top applicants faster.</p>
+            </div>
+            <div class="candidates-hero__stats">
+                <div class="candidates-hero__stat">
+                    <span class="label">Total</span>
+                    <strong>{{ $candidateStats['total'] }}</strong>
+                </div>
+                <div class="candidates-hero__stat">
+                    <span class="label">Avg match</span>
+                    <strong>{{ $candidateStats['average_match'] }}%</strong>
+                </div>
+                <div class="candidates-hero__stat">
+                    <span class="label">80%+ fit</span>
+                    <strong>{{ $candidateStats['high_match'] }}</strong>
+                </div>
+            </div>
+        </section>
+
+        <div class="card mb-4 candidates-card">
             <x-dashboard.layouts.partials.card-header :createRoute="route('dashboard.candidates.create')"/>
 
             <div class="card-body">

@@ -2,11 +2,14 @@
 
 namespace App\Models\Salary;
 
+use App\Models\Base\Concerns\ScopesEmployeeOwnedDataTable;
 use App\Models\Base\Search;
 use Illuminate\Database\Eloquent\Builder;
 
 class SalarySearch extends Search
 {
+    use ScopesEmployeeOwnedDataTable;
+
     protected array $orderables = [
         'id',
         'amount',
@@ -18,20 +21,24 @@ class SalarySearch extends Search
     {
         $filters = $this->filters;
 
-        return Salary::with(['user'])->select([
+        $query = Salary::with(['user'])->select([
             'id',
             'amount',
             'effective_date',
             'change_reason',
             'user_id',
-        ])
+        ]);
+
+        $this->scopeToAssigneeUnlessAdmin($query);
+
+        return $query
             ->when(!empty($filters['search']), function ($query) use ($filters) {
                 $query->likeOr(['id'], $filters);
             })
             ->when(!empty($filters['id']), function ($query) use ($filters) {
                 $query->where('id', $filters['id']);
             })
-            ->when(!empty($filters['user_id']), function ($query) use ($filters) {
+            ->when(!empty($filters['user_id']) && $this->dashboardUserIsAdmin(), function ($query) use ($filters) {
                 $query->where('user_id', $filters['user_id']);
             })
             ->when(!empty($filters['change_reason']), function ($query) use ($filters) {
@@ -41,6 +48,6 @@ class SalarySearch extends Search
 
     public function totalCount(): int
     {
-        return Salary::count();
+        return $this->assigneeScopedTotalCount(Salary::class);
     }
 }

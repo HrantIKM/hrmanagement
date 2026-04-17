@@ -75,12 +75,18 @@
         </div>
 
         <div class="card mb-4">
-            <x-dashboard.layouts.partials.card-header :createRoute="route('dashboard.users.create')"/>
+            @isset($createRoute)
+                <x-dashboard.layouts.partials.card-header :createRoute="$createRoute"/>
+            @else
+                <x-dashboard.layouts.partials.card-header/>
+            @endisset
+            @if($userExportsEnabled ?? false)
             <div class="px-4 pt-3 d-flex flex-wrap gap-2 align-items-center">
                 <span class="text-muted small me-1">{{ __('page.user.index.quick_exports') }}:</span>
                 <a href="{{ route('dashboard.users.exportCsv') }}" class="btn btn-outline-primary btn-sm">CSV</a>
                 <a href="{{ route('dashboard.users.exportExcel') }}" class="btn btn-outline-primary btn-sm">Excel</a>
             </div>
+            @endif
 
             <div class="card-body">
                 <x-dashboard.datatable._filters_form>

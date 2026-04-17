@@ -4,21 +4,16 @@ module.exports = {
     es2021: true,
   },
   extends: [
-    'plugin:vue/essential',
     'airbnb-base',
-    'plugin:vue/base',
   ],
   parserOptions: {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-  plugins: [
-    'vue',
-  ],
+  plugins: [],
   globals: {
     iziToast: 'readonly',
     $: 'readonly',
-    Vue: 'readonly',
     moment: 'readonly',
   },
   rules: {
@@ -31,7 +26,6 @@ module.exports = {
       jsx: 'never',
       ts: 'never',
       tsx: 'never',
-      vue: 'never',
     }],
     camelcase: 'off',
     'no-plusplus': 'off',
@@ -46,7 +40,7 @@ module.exports = {
   settings: {
     'import/resolver': {
       node: {
-        extensions: ['.js', '.vue'],
+        extensions: ['.js'],
         moduleDirectory: ['node_modules/', 'resources/'],
       },
     },

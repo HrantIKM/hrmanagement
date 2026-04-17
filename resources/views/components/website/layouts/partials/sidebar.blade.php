@@ -6,12 +6,6 @@
             <a href="{{route('dashboard.index')}}" class="brand-logo" aria-label="brand">
                 {{config('app.name')}}
             </a>
-            @if(!isProduction())
-            <br>
-            <p class="text-white">
-                {{ config('app.version') }} - {{ config('app.last_updated_at') }}
-            </p>
-            @endif
         </div>
 
         <button class="brand-toggle" type="button" aria-label="minimaize menu">

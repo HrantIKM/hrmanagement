@@ -1,0 +1,105 @@
+.salaries-page {
+  --sal-border: rgba(148, 163, 184, 0.25);
+}
+
+.salaries-hero {
+  border-radius: 14px;
+  padding: 1.15rem 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  color: #fff;
+  background: linear-gradient(120deg, #0f172a 0%, #701a75 40%, #d946ef 100%);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.2);
+}
+
+.salaries-hero__title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.salaries-hero__subtitle {
+  opacity: 0.93;
+  max-width: 40rem;
+}
+
+.salaries-hero__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(96px, 1fr));
+  gap: 0.5rem;
+}
+
+.salaries-hero__stat {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 10px;
+  padding: 0.45rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+
+  .label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.88;
+  }
+
+  strong {
+    font-size: 1rem;
+    margin-top: 0.2rem;
+  }
+}
+
+.salaries-card {
+  border: 1px solid var(--sal-border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.salaries-page .datatable-search-collapse form {
+  border-radius: 12px;
+  border: 1px solid var(--sal-border);
+  background: linear-gradient(180deg, #fdf4ff 0%, #fff 100%);
+  padding: 0.75rem 0.8rem;
+}
+
+.salary-amount-cell {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.status-pill--salary-promotion {
+  background: rgba(22, 163, 74, 0.12);
+  color: #166534;
+  border-color: rgba(22, 163, 74, 0.22);
+}
+
+.status-pill--salary-annual {
+  background: rgba(59, 130, 246, 0.14);
+  color: #1d4ed8;
+  border-color: rgba(59, 130, 246, 0.26);
+}
+
+.status-pill--salary-adjustment {
+  background: rgba(245, 158, 11, 0.14);
+  color: #92400e;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+@media (max-width: 991.98px) {
+  .salaries-hero__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .salaries-hero__stats {
+    grid-template-columns: 1fr;
+  }
+}

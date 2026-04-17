@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Dashboard\Concerns\AuthorizesDashboardEmployeeAccess;
 use App\Contracts\Department\IDepartmentRepository;
 use App\Http\Requests\Department\DepartmentRequest;
 use App\Http\Requests\Department\DepartmentSearchRequest;
@@ -13,6 +14,8 @@ use Illuminate\Http\JsonResponse;
 
 class DepartmentController extends BaseController
 {
+    use AuthorizesDashboardEmployeeAccess;
+
     public function __construct(
         DepartmentService $service,
         IDepartmentRepository $repository
@@ -23,7 +26,25 @@ class DepartmentController extends BaseController
 
     public function index(): View
     {
-        return $this->dashboardView('department.index');
+        view()->share('subHeaderData', ['pageName' => 'department.hub']);
+
+        return $this->dashboardView('department.hub', [
+            'canManageDepartments' => $this->dashboardUserIsAdmin(),
+        ]);
+    }
+
+    public function table(): View
+    {
+        view()->share('subHeaderData', ['pageName' => 'department.table']);
+
+        return $this->dashboardView('department.table', [
+            'createRoute' => $this->dashboardUserIsAdmin() ? route('dashboard.departments.create') : null,
+        ]);
+    }
+
+    public function hubData(): JsonResponse
+    {
+        return response()->json($this->service->buildHubPayload());
     }
 
     public function getListData(DepartmentSearchRequest $request): array
@@ -39,6 +60,8 @@ class DepartmentController extends BaseController
 
     public function create(): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'department.form',
             vars: $this->service->getViewData()
@@ -47,6 +70,8 @@ class DepartmentController extends BaseController
 
     public function store(DepartmentRequest $request): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated());
 
         return $this->sendOkCreated([
@@ -65,6 +90,8 @@ class DepartmentController extends BaseController
 
     public function edit(Department $department): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'department.form',
             vars: $this->service->getViewData($department->id),
@@ -74,6 +101,8 @@ class DepartmentController extends BaseController
 
     public function update(DepartmentRequest $request, Department $department): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated(), $department->id);
 
         return $this->sendOkUpdated([
@@ -83,6 +112,8 @@ class DepartmentController extends BaseController
 
     public function destroy(Department $department): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->delete($department->id);
 
         return $this->sendOkDeleted();

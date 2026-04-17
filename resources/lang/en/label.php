@@ -3,6 +3,7 @@
 return [
     'id' => 'ID',
     'name' => 'Name',
+    'parent_department' => 'Parent department',
     'slug' => 'Slug',
     'select' => 'Select',
     'created_at' => 'Created at',
@@ -38,6 +39,7 @@ return [
     'end_date' => 'End date',
     'due_date' => 'Due date',
     'date' => 'Date',
+    'is_public' => 'Public holiday',
     'task' => 'Task',
     'start_time' => 'Start time',
     'end_time' => 'End time',

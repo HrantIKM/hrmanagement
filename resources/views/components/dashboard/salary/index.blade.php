@@ -1,20 +1,47 @@
 <x-dashboard.layouts.app>
-    <div class="container-fluid">
-        <div class="card mb-4">
-            <x-dashboard.layouts.partials.card-header :createRoute="route('dashboard.salaries.create')"/>
+    <div class="container-fluid salaries-page">
+        <section class="salaries-hero mb-4">
+            <div>
+                <h2 class="salaries-hero__title mb-1">{{ __('salary.index.hero_title') }}</h2>
+                <p class="salaries-hero__subtitle mb-0">{{ __('salary.index.hero_subtitle') }}</p>
+            </div>
+            <div class="salaries-hero__stats">
+                <div class="salaries-hero__stat">
+                    <span class="label">{{ __('salary.index.stat_total') }}</span>
+                    <strong>{{ $salaryStats['total'] }}</strong>
+                </div>
+                <div class="salaries-hero__stat">
+                    <span class="label">{{ __('salary.index.stat_employees') }}</span>
+                    <strong>{{ $salaryStats['employees'] }}</strong>
+                </div>
+                <div class="salaries-hero__stat">
+                    <span class="label">{{ __('salary.index.stat_avg') }}</span>
+                    <strong>{{ $salaryStats['avg_amount'] !== null ? number_format($salaryStats['avg_amount'], 2) : '—' }}</strong>
+                </div>
+                <div class="salaries-hero__stat">
+                    <span class="label">{{ __('salary.index.stat_this_year') }}</span>
+                    <strong>{{ $salaryStats['this_year'] }}</strong>
+                </div>
+            </div>
+        </section>
+
+        <div class="card mb-4 salaries-card">
+            <x-dashboard.layouts.partials.card-header :createRoute="$createRoute"/>
 
             <div class="card-body">
                 <x-dashboard.datatable._filters_form>
-                    <div class="col-md-4 col-lg-2 form-group">
+                    <div class="col-md-4 form-group">
                         <x-dashboard.form._input name="id" type="number"/>
                     </div>
 
-                    <div class="col-md-4 col-lg-2 form-group">
+                    @if($salaryAdmin ?? false)
+                    <div class="col-md-4 form-group">
                         <x-dashboard.form._select name="user_id" allowClear defaultOption
                                                   :data="$users" class="select2"/>
                     </div>
+                    @endif
 
-                    <div class="col-md-4 col-lg-2 form-group">
+                    <div class="col-md-4 form-group">
                         <x-dashboard.form._select name="change_reason" allowClear defaultOption
                                                   :data="$salaryChangeReasonOptions" class="select2"/>
                     </div>

@@ -21,6 +21,22 @@
 
                 <div class="row">
                     <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label" for="parent_id">{{ __('label.parent_department') }}</label>
+                            <select name="parent_id" id="parent_id" class="form-select">
+                                <option value="">{{ __('department.root_badge') }}</option>
+                                @foreach($parentDepartments ?? [] as $opt)
+                                    <option value="{{ $opt['id'] }}" @selected((int) ($department->parent_id ?? 0) === (int) $opt['id'])>
+                                        {{ $opt['name'] }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
                         <div class="form-group required">
                             <x-dashboard.form._input name="name" :value="$department->name"/>
                         </div>

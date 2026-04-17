@@ -79,9 +79,8 @@ class MeetingService extends BaseService
         });
     }
 
-    public function convertMinutesToTasks(Meeting $meeting): int
+    public function convertMinutesToTasks(Meeting $meeting, string $summary): int
     {
-        $summary = (string) ($meeting->summary ?? '');
         if ($summary === '') {
             return 0;
         }
@@ -89,9 +88,9 @@ class MeetingService extends BaseService
         $lines = preg_split('/\r\n|\r|\n/', $summary) ?: [];
         $candidateLines = collect($lines)
             ->map(fn ($line) => trim((string) $line))
-            ->filter(fn ($line) => preg_match('/^[-*]\s+\[\s?\]\s+/u', $line) === 1 || str_starts_with(strtolower($line), 'todo:'))
+            ->filter(fn ($line) => preg_match('/^[-*]\s+\[\s*\]\s+/u', $line) === 1 || str_starts_with(strtolower($line), 'todo:'))
             ->map(function ($line) {
-                $line = preg_replace('/^[-*]\s+\[\s?\]\s+/u', '', $line) ?? $line;
+                $line = preg_replace('/^[-*]\s+\[\s*\]\s+/u', '', $line) ?? $line;
                 $line = preg_replace('/^todo:\s*/iu', '', $line) ?? $line;
 
                 return trim($line);

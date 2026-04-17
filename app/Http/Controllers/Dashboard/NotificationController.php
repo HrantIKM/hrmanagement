@@ -12,12 +12,18 @@ class NotificationController extends BaseController
 {
     public function index(Request $request): View
     {
-        $notifications = $request->user()
-            ->notifications()
-            ->paginate(25);
+        $user = $request->user();
+        $notifications = $user->notifications()->paginate(25);
+        $total = $notifications->total();
+        $unread = $user->unreadNotifications()->count();
 
         return $this->dashboardView('notification.index', [
             'notifications' => $notifications,
+            'notificationStats' => [
+                'total' => $total,
+                'unread' => $unread,
+                'read' => max(0, $total - $unread),
+            ],
         ]);
     }
 

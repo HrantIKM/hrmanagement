@@ -21,10 +21,45 @@ class DataTable {
   }
 
   columnDefaultRender(options) {
+    const statusClass = (value) => {
+      const normalized = (value ?? '').toString().trim().toLowerCase()
+        .replaceAll('&', ' ')
+        .replaceAll('/', ' ')
+        .replaceAll('__', ' ')
+        .replace(/\s+/g, '-')
+        .replaceAll('_', '-');
+      return normalized || 'default';
+    };
+    const statusPillRender = (value) => `<span class="status-pill status-pill--${statusClass(value)}">${value || ''}</span>`;
     const showStatusRender = {
       show_status: {
         render(showStatus) {
           return `<span class="show-status-${showStatus}">${$trans(`__dashboard.select.option.show_status_${showStatus}`)}</span>`;
+        },
+      },
+      status: {
+        render(status) {
+          return statusPillRender(status);
+        },
+      },
+      status_display: {
+        render(status) {
+          return statusPillRender(status);
+        },
+      },
+      task_status: {
+        render(status) {
+          return statusPillRender(status);
+        },
+      },
+      priority: {
+        render(priority) {
+          return statusPillRender(priority);
+        },
+      },
+      priority_display: {
+        render(priority) {
+          return statusPillRender(priority);
         },
       },
     };
@@ -463,7 +498,12 @@ class DataTable {
   }
 
   getCurrentModuleName() {
-    return location.pathname.split('/')[3];
+    const parts = location.pathname.split('/').filter(Boolean);
+    const dashIdx = parts.indexOf('dashboard');
+    if (dashIdx >= 0 && parts.length > dashIdx + 1) {
+      return parts.slice(dashIdx + 1).join('__');
+    }
+    return parts[parts.length - 1] || 'home';
   }
 
   clearSearchedDataFromLocalstorage() {

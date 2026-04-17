@@ -10,6 +10,7 @@ use App\Models\Goal\Goal;
 use App\Models\Goal\GoalSearch;
 use App\Services\Goal\GoalService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 
 class GoalController extends BaseController
@@ -26,9 +27,43 @@ class GoalController extends BaseController
 
     public function index(): View
     {
+        $base = $this->scopedGoalsQuery();
+        $total = (clone $base)->count();
+        $achieved = (clone $base)
+            ->where('target_value', '>', 0)
+            ->whereColumn('current_value', '>=', 'target_value')
+            ->count();
+        $avgProgress = (clone $base)
+            ->where('target_value', '>', 0)
+            ->selectRaw('AVG(LEAST(100, (current_value / target_value) * 100)) as aggregate')
+            ->value('aggregate');
+        $avgProgress = $avgProgress !== null ? round((float) $avgProgress, 1) : null;
+        $overdue = (clone $base)
+            ->whereNotNull('deadline')
+            ->whereDate('deadline', '<', now()->toDateString())
+            ->where('target_value', '>', 0)
+            ->whereColumn('current_value', '<', 'target_value')
+            ->count();
+
         return $this->dashboardView('goal.index', array_merge($this->service->getIndexViewData(), [
             'createRoute' => $this->dashboardUserIsAdmin() ? route('dashboard.goals.create') : null,
+            'goalStats' => [
+                'total' => $total,
+                'avg_progress' => $avgProgress,
+                'achieved' => $achieved,
+                'overdue' => $overdue,
+            ],
         ]));
+    }
+
+    protected function scopedGoalsQuery(): Builder
+    {
+        $query = Goal::query();
+        if (!$this->dashboardUserIsAdmin()) {
+            $query->where('user_id', auth()->id());
+        }
+
+        return $query;
     }
 
     public function getListData(GoalSearchRequest $request): array

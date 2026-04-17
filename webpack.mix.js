@@ -1,4 +1,5 @@
 const mix = require('laravel-mix');
+const path = require('path');
 
 /*
  |--------------------------------------------------------------------------
@@ -25,8 +26,20 @@ mix.combine([
 ], 'public/js/dashboard/bundle.js').minify('public/js/dashboard/bundle.js');
 
 mix.js('resources/js/app.js', 'public/js')
+  .js('resources/js/dashboard/chat.js', 'public/js/dashboard')
   .js('resources/js/dashboard/dashboard-app.js', 'public/js/dashboard')
-  .js('resources/js/dashboard/dashboard-app-vue.js', 'public/js/dashboard').vue()
+  .js('resources/js/dashboard/department/hub.js', 'public/js/dashboard/department')
+  .js('resources/js/dashboard/task/board.js', 'public/js/dashboard/task')
   .sass('resources/sass/dashboard/dashboard-app.scss', 'public/css/dashboard', [])
   .sass('resources/sass/app.scss', 'public/css')
   .version();
+
+// laravel-echo@2 "main" is echo.common.js; Webpack leaves bare `exports` and breaks in the browser.
+// Force the ESM build so the bundle wraps it correctly.
+mix.webpackConfig({
+  resolve: {
+    alias: {
+      'laravel-echo$': path.resolve(__dirname, 'node_modules/laravel-echo/dist/echo.js'),
+    },
+  },
+});

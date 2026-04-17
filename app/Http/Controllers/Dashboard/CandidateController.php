@@ -26,8 +26,17 @@ class CandidateController extends BaseController
 
     public function index(): View
     {
+        $totalCandidates = Candidate::query()->count();
+        $avgMatch = (float) Candidate::query()->avg('match_score');
+        $highMatch = Candidate::query()->where('match_score', '>=', 80)->count();
+
         return $this->dashboardView('candidate.index', [
             'vacancies' => $this->vacancyRepository->getForSelect(),
+            'candidateStats' => [
+                'total' => $totalCandidates,
+                'average_match' => round($avgMatch, 1),
+                'high_match' => $highMatch,
+            ],
         ]);
     }
 

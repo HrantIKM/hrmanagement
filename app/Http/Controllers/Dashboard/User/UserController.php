@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard\User;
 
 use App\Contracts\User\IUserRepository;
 use App\Http\Controllers\Dashboard\BaseController;
+use App\Http\Controllers\Dashboard\Concerns\AuthorizesDashboardEmployeeAccess;
 use App\Http\Requests\User\UserRequest;
 use App\Http\Requests\User\UserSearchRequest;
 use App\Exports\UsersExport;
@@ -19,6 +20,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UserController extends BaseController
 {
+    use AuthorizesDashboardEmployeeAccess;
+
     public function __construct(
         IUserRepository $repository,
         UserService $service
@@ -39,13 +42,16 @@ class UserController extends BaseController
             ->limit(6)
             ->get();
 
-        return $this->dashboardView('user.index', compact(
+        return $this->dashboardView('user.index', array_merge(compact(
             'totalUsers',
             'activeUsers',
             'onLeaveUsers',
             'withAvatar',
             'recentUsers'
-        ));
+        ), [
+            'createRoute' => $this->dashboardUserIsAdmin() ? route('dashboard.users.create') : null,
+            'userExportsEnabled' => $this->dashboardUserIsAdmin(),
+        ]));
     }
 
     public function getListData(UserSearchRequest $request): array
@@ -61,6 +67,8 @@ class UserController extends BaseController
 
     public function create(): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'user.form',
             vars: $this->service->getViewData()
@@ -69,6 +77,8 @@ class UserController extends BaseController
 
     public function store(UserRequest $request): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated());
 
         return $this->sendOkCreated([
@@ -87,6 +97,8 @@ class UserController extends BaseController
 
     public function edit(User $user): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'user.form',
             vars: $this->service->getViewData($user->id),
@@ -96,6 +108,8 @@ class UserController extends BaseController
 
     public function update(UserRequest $request, User $user): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated(), $user->id);
 
         return $this->sendOkUpdated([
@@ -105,6 +119,8 @@ class UserController extends BaseController
 
     public function destroy(User $user): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->delete($user->id);
 
         return $this->sendOkDeleted();
@@ -112,11 +128,15 @@ class UserController extends BaseController
 
     public function exportExcel(): BinaryFileResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return Excel::download(new UsersExport(), 'employees-report.xlsx');
     }
 
     public function exportCsv(): StreamedResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $fileName = 'employees-report.csv';
         $headers = [
             'Content-Type' => 'text/csv',

@@ -1,24 +1,49 @@
 <x-dashboard.layouts.app>
-    <div class="container-fluid">
-        <div class="card mb-4">
-            <x-dashboard.layouts.partials.card-header :createRoute="route('dashboard.skills.create')"/>
+    <div class="container-fluid skills-page">
+        <section class="skills-hero mb-4">
+            <div>
+                <h2 class="skills-hero__title mb-1">{{ __('skill.index.hero_title') }}</h2>
+                <p class="skills-hero__subtitle mb-0">{{ __('skill.index.hero_subtitle') }}</p>
+            </div>
+            <div class="skills-hero__stats">
+                <div class="skills-hero__stat">
+                    <span class="label">{{ __('skill.index.stat_total') }}</span>
+                    <strong>{{ $skillStats['total'] }}</strong>
+                </div>
+                <div class="skills-hero__stat">
+                    <span class="label">{{ __('skill.index.stat_technical') }}</span>
+                    <strong>{{ $skillStats['technical'] }}</strong>
+                </div>
+                <div class="skills-hero__stat">
+                    <span class="label">{{ __('skill.index.stat_soft') }}</span>
+                    <strong>{{ $skillStats['soft'] }}</strong>
+                </div>
+                <div class="skills-hero__stat">
+                    <span class="label">{{ __('skill.index.stat_language') }}</span>
+                    <strong>{{ $skillStats['language'] }}</strong>
+                </div>
+            </div>
+        </section>
+
+        <div class="card mb-4 skills-card">
+            <x-dashboard.layouts.partials.card-header :createRoute="$createRoute"/>
 
             <div class="card-body">
                 <x-dashboard.datatable._filters_form>
-                    <div class="col-md-4 col-lg-2 form-group">
+                    <div class="col-md-6 col-lg-3 form-group">
                         <x-dashboard.form._input name="id" type="number"/>
                     </div>
 
-                    <div class="col-md-4 col-lg-2 form-group">
+                    <div class="col-md-6 col-lg-3 form-group">
                         <x-dashboard.form._input name="name"/>
                     </div>
 
-                    <div class="col-md-4 col-lg-2 form-group">
+                    <div class="col-md-6 col-lg-3 form-group">
                         <x-dashboard.form._select name="department_id" allowClear defaultOption
                                                   :data="$departments" class="select2"/>
                     </div>
 
-                    <div class="col-md-4 col-lg-2 form-group">
+                    <div class="col-md-6 col-lg-3 form-group">
                         <x-dashboard.form._select name="category" allowClear defaultOption
                                                   :data="$skillCategories" class="select2"/>
                     </div>

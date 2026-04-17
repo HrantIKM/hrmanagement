@@ -46,6 +46,16 @@ return [
             'create' => 'Create Department',
             'description' => '',
         ],
+
+        'hub' => [
+            'title' => 'Departments — org map',
+            'description' => '',
+        ],
+
+        'table' => [
+            'title' => 'Departments — table',
+            'description' => '',
+        ],
     ],
 
     'position' => [
@@ -155,8 +165,14 @@ return [
         'index' => [
             'title' => 'Notifications',
             'empty' => 'You have no notifications yet.',
+            'empty_hint' => 'Approvals, meeting invites, and other updates will show up here.',
             'mark_read' => 'Mark read',
             'mark_all_read' => 'Mark all read',
+            'hero_title' => 'Your inbox',
+            'hero_subtitle' => 'Review alerts from HR workflows. Open an item to follow the link, or mark it read when you are done.',
+            'stat_total' => 'Total',
+            'stat_unread' => 'Unread',
+            'stat_read' => 'Read',
         ],
     ],
 
@@ -224,26 +240,6 @@ return [
         'my-index' => ['title' => 'My payslips', 'create' => '', 'description' => ''],
     ],
 
-    'article' => [
-        'form' => [
-            'edit' => [
-                'title' => 'Edit Article',
-                'description' => '',
-            ],
-
-            'add' => [
-                'title' => 'Create Article',
-                'description' => '',
-            ],
-        ],
-
-        'index' => [
-            'title' => 'Articles',
-            'create' => 'Create Article',
-            'description' => '',
-        ],
-    ],
-
     'profile' => [
         'index' => [
             'title' => 'My Profile',
@@ -259,5 +255,12 @@ return [
         'skills' => 'Assigned skills',
 
         'no_skills' => 'No skills are assigned to your profile yet.',
+    ],
+
+    'message' => [
+        'inbox' => [
+            'title' => 'Messages',
+            'description' => 'Private conversations with your colleagues',
+        ],
     ],
 ];

@@ -6,6 +6,7 @@ use App\Contracts\Department\IDepartmentRepository;
 use App\Contracts\Position\IPositionRepository;
 use App\Http\Requests\Position\PositionRequest;
 use App\Http\Requests\Position\PositionSearchRequest;
+use App\Models\Department\Department;
 use App\Models\Position\Position;
 use App\Models\Position\PositionSearch;
 use App\Services\Position\PositionService;
@@ -25,8 +26,20 @@ class PositionController extends BaseController
 
     public function index(): View
     {
+        $total = Position::count();
+        $departmentsWithRoles = Department::whereHas('positions')->count();
+        $withPayBand = Position::whereNotNull('min_salary')->whereNotNull('max_salary')->count();
+        $unassignedDepartment = Position::whereNull('department_id')->count();
+
         return $this->dashboardView('position.index', [
             'departments' => $this->departmentRepository->getForSelect(),
+            'createRoute' => route('dashboard.positions.create'),
+            'positionStats' => [
+                'total' => $total,
+                'departments' => $departmentsWithRoles,
+                'pay_bands' => $withPayBand,
+                'unassigned' => $unassignedDepartment,
+            ],
         ]);
     }
 

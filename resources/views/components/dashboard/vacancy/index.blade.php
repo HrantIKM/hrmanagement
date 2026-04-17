@@ -1,7 +1,32 @@
 <x-dashboard.layouts.app>
-    <div class="container-fluid">
-        <div class="card mb-4">
-            <x-dashboard.layouts.partials.card-header :createRoute="route('dashboard.vacancies.create')"/>
+    <div class="container-fluid vacancies-page">
+        <section class="vacancies-hero mb-4">
+            <div>
+                <h2 class="vacancies-hero__title mb-1">{{ __('vacancy.index.hero_title') }}</h2>
+                <p class="vacancies-hero__subtitle mb-0">{{ __('vacancy.index.hero_subtitle') }}</p>
+            </div>
+            <div class="vacancies-hero__stats">
+                <div class="vacancies-hero__stat">
+                    <span class="label">{{ __('vacancy.index.stat_total') }}</span>
+                    <strong>{{ $vacancyStats['total'] }}</strong>
+                </div>
+                <div class="vacancies-hero__stat">
+                    <span class="label">{{ __('vacancy.index.stat_open') }}</span>
+                    <strong>{{ $vacancyStats['open'] }}</strong>
+                </div>
+                <div class="vacancies-hero__stat">
+                    <span class="label">{{ __('vacancy.index.stat_closed') }}</span>
+                    <strong>{{ $vacancyStats['closed'] }}</strong>
+                </div>
+                <div class="vacancies-hero__stat">
+                    <span class="label">{{ __('vacancy.index.stat_closing_soon') }}</span>
+                    <strong>{{ $vacancyStats['closing_soon'] }}</strong>
+                </div>
+            </div>
+        </section>
+
+        <div class="card mb-4 vacancies-card">
+            <x-dashboard.layouts.partials.card-header :createRoute="$createRoute"/>
 
             <div class="card-body">
                 <x-dashboard.datatable._filters_form>
@@ -41,4 +66,3 @@
         <script src="{{ asset('/js/dashboard/vacancy/index.js') }}"></script>
     </x-slot>
 </x-dashboard.layouts.app>
-

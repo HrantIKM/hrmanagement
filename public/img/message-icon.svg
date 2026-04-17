@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Message icon">
+  <defs>
+    <linearGradient id="bubble-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 8C18.2 8 7 17.6 7 29.5c0 6.1 3 11.5 7.8 15.3l-2.3 8.4c-.2.8.6 1.5 1.4 1.2l10.3-3.8c2.5.7 5.1 1.1 7.8 1.1 13.8 0 25-9.6 25-21.5S45.8 8 32 8z" fill="url(#bubble-grad)"/>
+  <circle cx="23" cy="30" r="2.5" fill="#ffffff"/>
+  <circle cx="32" cy="30" r="2.5" fill="#ffffff"/>
+  <circle cx="41" cy="30" r="2.5" fill="#ffffff"/>
+</svg>

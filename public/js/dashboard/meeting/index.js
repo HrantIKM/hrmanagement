@@ -1,3 +1,17 @@
+function formatMeetingDateTime(raw) {
+  if (raw === null || raw === undefined || raw === '') {
+    return '<span class="text-muted">—</span>';
+  }
+  const d = new Date(raw);
+  if (Number.isNaN(d.getTime())) {
+    return String(raw);
+  }
+  return `<span class="meeting-dt-cell">${new Intl.DateTimeFormat(undefined, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(d)}</span>`;
+}
+
 const options = {
   pathOptions: {
     searchPath: route('dashboard.meetings.getListData'),
@@ -8,6 +22,19 @@ const options = {
 
   relations: {
     room: 'name',
+  },
+
+  columnsRender: {
+    start_at: {
+      render(data) {
+        return formatMeetingDateTime(data);
+      },
+    },
+    end_at: {
+      render(data) {
+        return formatMeetingDateTime(data);
+      },
+    },
   },
 
   actions: {},

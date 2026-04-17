@@ -49,6 +49,29 @@ window.$can = function (value) {
   return _return;
 };
 
+function scrollDashboardMenuToActive() {
+  const menuNav = document.getElementById('menu-nav');
+  if (!menuNav) {
+    return;
+  }
+  const active = menuNav.querySelector('.menu-link.active-submenu')
+    || menuNav.querySelector('a.menu-link.active');
+  if (!active) {
+    return;
+  }
+  const run = () => active.scrollIntoView({ block: 'center', inline: 'nearest' });
+  window.requestAnimationFrame(() => {
+    run();
+    window.setTimeout(run, 200);
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', scrollDashboardMenuToActive);
+} else {
+  scrollDashboardMenuToActive();
+}
+
 window.$is = (value) => {
   // eslint-disable-next-line no-underscore-dangle
   let _return = false;

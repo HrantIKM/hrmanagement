@@ -23,7 +23,7 @@ class LeaveBalanceController extends BaseController
 
         $this->middleware(function ($request, $next) {
             $action = $request->route()?->getActionMethod();
-            if (!in_array($action, ['create', 'store', 'edit', 'update', 'destroy', 'show'], true)) {
+            if (!in_array($action, ['create', 'store', 'edit', 'update', 'destroy'], true)) {
                 return $next($request);
             }
 
@@ -47,8 +47,6 @@ class LeaveBalanceController extends BaseController
 
     public function getListData(LeaveBalanceSearchRequest $request): array
     {
-        abort_unless(auth()->user()?->hasRole(RoleType::ADMIN), 403);
-
         $searcher = new LeaveBalanceSearch($request->validated());
 
         return [
@@ -77,6 +75,11 @@ class LeaveBalanceController extends BaseController
 
     public function show(LeaveBalance $leaveBalance): View
     {
+        abort_unless(
+            auth()->user()?->hasRole(RoleType::ADMIN) || (int) $leaveBalance->user_id === (int) auth()->id(),
+            403
+        );
+
         return $this->dashboardView(
             view: 'leave-balance.form',
             vars: $this->service->getViewData($leaveBalance->id),

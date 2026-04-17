@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Dashboard\Concerns\AuthorizesDashboardEmployeeAccess;
 use App\Contracts\Skill\ISkillRepository;
 use App\Http\Requests\Skill\SkillRequest;
 use App\Http\Requests\Skill\SkillSearchRequest;
@@ -16,6 +17,8 @@ use Illuminate\Http\JsonResponse;
 
 class SkillController extends BaseController
 {
+    use AuthorizesDashboardEmployeeAccess;
+
     public function __construct(
         SkillService $service,
         ISkillRepository $repository
@@ -26,14 +29,26 @@ class SkillController extends BaseController
 
     public function index(): View
     {
+        $total = Skill::count();
+        $technical = Skill::where('category', SkillCategory::TECHNICAL)->count();
+        $soft = Skill::where('category', SkillCategory::SOFT)->count();
+        $language = Skill::where('category', SkillCategory::LANGUAGE)->count();
+
         return $this->dashboardView('skill.index', [
             'skillCategories' => collect(SkillCategory::ALL)
-                ->mapWithKeys(fn(string $v) => [$v => __('skill.category.' . $v)]),
+                ->mapWithKeys(fn (string $v) => [$v => __('skill.category.' . $v)]),
             'departments' => Department::query()
                 ->whereIn('name', DepartmentCode::values())
                 ->orderBy('name')
                 ->get()
-                ->mapWithKeys(fn(Department $d) => [$d->id => $d->name]),
+                ->mapWithKeys(fn (Department $d) => [$d->id => $d->name]),
+            'createRoute' => $this->dashboardUserIsAdmin() ? route('dashboard.skills.create') : null,
+            'skillStats' => [
+                'total' => $total,
+                'technical' => $technical,
+                'soft' => $soft,
+                'language' => $language,
+            ],
         ]);
     }
 
@@ -50,6 +65,8 @@ class SkillController extends BaseController
 
     public function create(): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'skill.form',
             vars: $this->service->getViewData()
@@ -58,6 +75,8 @@ class SkillController extends BaseController
 
     public function store(SkillRequest $request): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated());
 
         return $this->sendOkCreated([
@@ -76,6 +95,8 @@ class SkillController extends BaseController
 
     public function edit(Skill $skill): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'skill.form',
             vars: $this->service->getViewData($skill->id),
@@ -85,6 +106,8 @@ class SkillController extends BaseController
 
     public function update(SkillRequest $request, Skill $skill): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated(), $skill->id);
 
         return $this->sendOkUpdated([
@@ -94,6 +117,8 @@ class SkillController extends BaseController
 
     public function destroy(Skill $skill): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->delete($skill->id);
 
         return $this->sendOkDeleted();

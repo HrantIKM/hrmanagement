@@ -12,9 +12,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
-    'version' => env('DASHBOARD_VERSION'),
-    'last_updated_at' => env('LAST_UPDATED_AT'),
+    'name' => env('APP_NAME', 'Manage Studio'),
 
     /*
     |--------------------------------------------------------------------------
@@ -156,6 +154,7 @@ return [
         Illuminate\Queue\QueueServiceProvider::class,
         Illuminate\Redis\RedisServiceProvider::class,
         Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
+        Illuminate\Broadcasting\BroadcastServiceProvider::class,
         Illuminate\Session\SessionServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
@@ -170,7 +169,7 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,

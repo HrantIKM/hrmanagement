@@ -57,7 +57,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="form-group">
-                            <x-dashboard.form._textarea name="description" :value="$task->description" rows="5"/>
+                            <x-dashboard.form._textarea name="description" :value="$task->description" rows="7" class="ckeditor5"/>
                         </div>
                     </div>
                 </div>

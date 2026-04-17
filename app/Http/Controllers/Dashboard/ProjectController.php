@@ -11,6 +11,7 @@ use App\Models\Project\Project;
 use App\Models\Project\ProjectSearch;
 use App\Services\Project\ProjectService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 
 class ProjectController extends BaseController
@@ -27,11 +28,33 @@ class ProjectController extends BaseController
 
     public function index(): View
     {
+        $base = $this->scopedProjectsQuery();
+        $total = (clone $base)->count();
+        $planning = (clone $base)->where('status', ProjectStatus::PLANNING)->count();
+        $active = (clone $base)->where('status', ProjectStatus::ACTIVE)->count();
+        $completed = (clone $base)->where('status', ProjectStatus::COMPLETED)->count();
+
         return $this->dashboardView('project.index', [
             'projectStatuses' => collect(ProjectStatus::ALL)
-                ->mapWithKeys(fn(string $v) => [$v => __('project.status.' . $v)]),
+                ->mapWithKeys(fn (string $v) => [$v => __('project.status.' . $v)]),
             'createRoute' => $this->dashboardUserIsAdmin() ? route('dashboard.projects.create') : null,
+            'projectStats' => [
+                'total' => $total,
+                'planning' => $planning,
+                'active' => $active,
+                'completed' => $completed,
+            ],
         ]);
+    }
+
+    protected function scopedProjectsQuery(): Builder
+    {
+        $query = Project::query();
+        if (!$this->dashboardUserIsAdmin()) {
+            $query->whereHas('users', fn ($q) => $q->where('users.id', auth()->id()));
+        }
+
+        return $query;
     }
 
     public function getListData(ProjectSearchRequest $request): array

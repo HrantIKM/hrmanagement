@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Dashboard\Concerns\AuthorizesDashboardEmployeeAccess;
 use App\Http\Requests\Room\RoomRequest;
 use App\Http\Requests\Room\RoomSearchRequest;
+use App\Models\Meeting\Meeting;
 use App\Models\Room\RoomSearch;
 use App\Models\Room\Room;
 use App\Services\Room\RoomService;
@@ -13,6 +15,8 @@ use Illuminate\Contracts\View\View;
 
 class RoomController extends BaseController
 {
+    use AuthorizesDashboardEmployeeAccess;
+
     public function __construct(
         RoomService $service,
         IRoomRepository $repository
@@ -23,8 +27,18 @@ class RoomController extends BaseController
 
     public function index(): View
     {
+        $total = Room::count();
+        $withMeetings = Room::has('meetings')->count();
+        $meetingRows = Meeting::whereNotNull('room_id')->count();
+
         return $this->dashboardView('room.index', [
-            'createRoute' => route('dashboard.rooms.create'),
+            'createRoute' => $this->dashboardUserIsAdmin() ? route('dashboard.rooms.create') : null,
+            'roomStats' => [
+                'total' => $total,
+                'with_meetings' => $withMeetings,
+                'unused' => max(0, $total - $withMeetings),
+                'meeting_bookings' => $meetingRows,
+            ],
         ]);
     }
 
@@ -41,6 +55,8 @@ class RoomController extends BaseController
 
     public function create(): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'room.form',
             vars: $this->service->getViewData()
@@ -49,6 +65,8 @@ class RoomController extends BaseController
 
     public function store(RoomRequest $request): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated());
 
         return $this->sendOkCreated([
@@ -67,6 +85,8 @@ class RoomController extends BaseController
 
     public function edit(Room $room): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'room.form',
             vars: $this->service->getViewData($room->id),
@@ -76,6 +96,8 @@ class RoomController extends BaseController
 
     public function update(RoomRequest $request, Room $room): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated(), $room->id);
 
         return $this->sendOkUpdated([
@@ -85,6 +107,8 @@ class RoomController extends BaseController
 
     public function destroy(Room $room): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         // If deleting other data except model use service
         // $this->service->delete($room->id);
         $this->repository->destroy($room->id);

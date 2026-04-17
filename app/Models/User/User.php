@@ -11,6 +11,8 @@ use App\Models\User\Traits\UserAccessors;
 use App\Models\User\Traits\UserHelperMethods;
 use App\Models\User\Traits\UserRelations;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Message\Message;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -23,6 +25,7 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $appends = [
+        'name',
         'employment_status_display',
         'avatar_url',
     ];
@@ -88,6 +91,16 @@ class User extends Authenticatable
     public function setFileConfigName(): string
     {
         return self::getClassName();
+    }
+
+    public function sentMessages(): HasMany
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function receivedMessages(): HasMany
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
     }
 
     public function files(?string $fieldName = null, ?string $fileType = null): MorphMany

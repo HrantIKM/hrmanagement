@@ -11,12 +11,29 @@ const options = {
   },
 
   columnsRender: {
+    type_display: {
+      render(data, type, row) {
+        const key = (row.type || '').toString().replace(/_/g, '-');
+        const pillClass = key ? `status-pill status-pill--goal-${key}` : 'status-pill';
+        return `<span class="${pillClass}">${data || ''}</span>`;
+      },
+    },
     progress_percent: {
       render(data) {
         if (data === null || data === undefined || data === '') {
-          return '—';
+          return '<span class="goal-progress goal-progress--empty">—</span>';
         }
-        return `${data}%`;
+        const pct = Math.min(100, Math.max(0, Number(data)));
+        let tone = 'low';
+        if (pct >= 100) tone = 'complete';
+        else if (pct >= 70) tone = 'good';
+        else if (pct >= 40) tone = 'mid';
+        return `<div class="goal-progress goal-progress--${tone}" title="${data}%">
+          <div class="goal-progress__track">
+            <div class="goal-progress__fill" style="width:${pct}%"></div>
+          </div>
+          <span class="goal-progress__label">${data}%</span>
+        </div>`;
       },
     },
   },

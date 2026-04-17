@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Article\Article;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,7 +14,7 @@ class CreateArticleMlsTable extends Migration
     public function up()
     {
         Schema::create('article_mls', function (Blueprint $table) {
-            $table->foreignIdFor(Article::class)->constrained()->cascadeOnDelete();
+            $table->foreignId('article_id')->constrained('articles')->cascadeOnDelete();
             $table->char('lng_code', 2);
             $table->string('title', 100)->nullable();
             $table->string('short_description')->nullable();

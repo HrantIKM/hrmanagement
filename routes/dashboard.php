@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Dashboard\ArticleController;
 use App\Http\Controllers\Dashboard\AttendanceController;
 use App\Http\Controllers\Dashboard\CandidateController;
 use App\Http\Controllers\Dashboard\DashboardController;
@@ -11,6 +10,7 @@ use App\Http\Controllers\Dashboard\HolidayController;
 use App\Http\Controllers\Dashboard\LeaveRequestController;
 use App\Http\Controllers\Dashboard\LeaveBalanceController;
 use App\Http\Controllers\Dashboard\MeetingController;
+use App\Http\Controllers\Dashboard\MessageController;
 use App\Http\Controllers\Dashboard\NotificationController;
 use App\Http\Controllers\Dashboard\PayslipController;
 use App\Http\Controllers\Dashboard\PositionController;
@@ -65,6 +65,14 @@ Route::group(['middleware' => ["role:$rolesAdminOrUser"]], function () {
     Route::resource('reviews', ReviewController::class);
     Route::get('reviews/dataTable/get-list', [ReviewController::class, 'getListData'])->name('reviews.getListData');
 
+    Route::get('messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::get('messages/history/{user}', [MessageController::class, 'history'])->name('messages.history');
+    Route::post('messages', [MessageController::class, 'store'])->name('messages.store');
+    Route::post('messages/read/{user}', [MessageController::class, 'markRead'])->name('messages.read');
+    Route::delete('messages/thread/{user}', [MessageController::class, 'destroyThread'])->name('messages.destroyThread');
+    Route::delete('messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
+    Route::get('messages/{user}', [MessageController::class, 'thread'])->name('messages.thread');
+
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('notifications/recent', [NotificationController::class, 'recent'])->name('notifications.recent');
     Route::post('notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
@@ -97,50 +105,45 @@ Route::group(['middleware' => ["role:$rolesAdminOrUser"]], function () {
     Route::get('payslips/{payslip}/download', [PayslipController::class, 'download'])->name('payslips.download');
     Route::get('payslips/export/csv', [PayslipController::class, 'exportCsv'])->name('payslips.exportCsv');
     Route::get('payslips/export/xlsx', [PayslipController::class, 'exportExcel'])->name('payslips.exportExcel');
+
+    Route::get('users/dataTable/get-list', [UserController::class, 'getListData'])->name('users.getListData');
+    Route::get('users/export/csv', [UserController::class, 'exportCsv'])->name('users.exportCsv');
+    Route::get('users/export/xlsx', [UserController::class, 'exportExcel'])->name('users.exportExcel');
+    Route::resource('users', UserController::class);
+
+    Route::get('departments/dataTable/get-list', [DepartmentController::class, 'getListData'])->name('departments.getListData');
+    Route::get('departments/table', [DepartmentController::class, 'table'])->name('departments.table');
+    Route::get('departments/hub-data', [DepartmentController::class, 'hubData'])->name('departments.hubData');
+    Route::resource('departments', DepartmentController::class);
+
+    Route::get('holidays/dataTable/get-list', [HolidayController::class, 'getListData'])->name('holidays.getListData');
+    Route::resource('holidays', HolidayController::class);
+
+    Route::get('rooms/dataTable/get-list', [RoomController::class, 'getListData'])->name('rooms.getListData');
+    Route::resource('rooms', RoomController::class);
+
+    Route::get('skills/dataTable/get-list', [SkillController::class, 'getListData'])->name('skills.getListData');
+    Route::resource('skills', SkillController::class);
+
+    Route::get('salaries/dataTable/get-list', [SalaryController::class, 'getListData'])->name('salaries.getListData');
+    Route::resource('salaries', SalaryController::class);
 });
 
 // Admin-only catalog & HR records
 Route::group(['middleware' => ["role:$roleAdmin"]], function () {
-    Route::resource('users', UserController::class);
-    Route::get('users/dataTable/get-list', [UserController::class, 'getListData'])->name('users.getListData');
-    Route::get('users/export/csv', [UserController::class, 'exportCsv'])->name('users.exportCsv');
-    Route::get('users/export/xlsx', [UserController::class, 'exportExcel'])->name('users.exportExcel');
-
-    Route::resource('departments', DepartmentController::class);
-    Route::get('departments/dataTable/get-list', [DepartmentController::class, 'getListData'])->name('departments.getListData');
-
-    Route::resource('positions', PositionController::class);
     Route::get('positions/dataTable/get-list', [PositionController::class, 'getListData'])->name('positions.getListData');
+    Route::resource('positions', PositionController::class);
 
-    Route::resource('skills', SkillController::class);
-    Route::get('skills/dataTable/get-list', [SkillController::class, 'getListData'])->name('skills.getListData');
-
-    Route::resource('holidays', HolidayController::class);
-    Route::get('holidays/dataTable/get-list', [HolidayController::class, 'getListData'])->name('holidays.getListData');
-
-    Route::resource('rooms', RoomController::class);
-    Route::get('rooms/dataTable/get-list', [RoomController::class, 'getListData'])->name('rooms.getListData');
-
-    Route::resource('vacancies', VacancyController::class);
     Route::get('vacancies/dataTable/get-list', [VacancyController::class, 'getListData'])->name('vacancies.getListData');
+    Route::resource('vacancies', VacancyController::class);
 
     Route::get('candidates/{candidate}/resume', [CandidateController::class, 'resume'])->name('candidates.resume');
-    Route::resource('candidates', CandidateController::class);
     Route::get('candidates/dataTable/get-list', [CandidateController::class, 'getListData'])->name('candidates.getListData');
-
-    Route::resource('salaries', SalaryController::class);
-    Route::get('salaries/dataTable/get-list', [SalaryController::class, 'getListData'])->name('salaries.getListData');
+    Route::resource('candidates', CandidateController::class);
 });
-
-// Articles
-Route::resource('articles', ArticleController::class);
-Route::get('articles/dataTable/get-list', [ArticleController::class, 'getListData'])->name('articles.getListData');
 
 // Profile
 Route::controller(ProfileController::class)->as('profile.')->group(function () {
     Route::get('profile', 'index')->name('index');
     Route::put('profile/{id}', 'update')->whereNumber('id')->name('update');
 });
-
-// Vue Example
-Route::view('vue-example', 'components.dashboard.vue-example.index')->name('vue-example.index');

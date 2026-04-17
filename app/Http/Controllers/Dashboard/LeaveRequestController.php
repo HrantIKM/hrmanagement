@@ -11,6 +11,7 @@ use App\Models\LeaveRequest\LeaveRequest;
 use App\Models\RoleAndPermission\Enums\RoleType;
 use App\Services\LeaveRequest\LeaveRequestService;
 use App\Contracts\LeaveRequest\ILeaveRequestRepository;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
 
@@ -26,13 +27,35 @@ class LeaveRequestController extends BaseController
 
     public function index(): View
     {
+        $base = $this->scopedLeaveRequestsQuery();
+        $total = (clone $base)->count();
+        $pending = (clone $base)->where('status', LeaveRequestStatus::PENDING)->count();
+        $approved = (clone $base)->where('status', LeaveRequestStatus::APPROVED)->count();
+        $rejected = (clone $base)->where('status', LeaveRequestStatus::REJECTED)->count();
+
         return $this->dashboardView('leave-request.index', [
             'leaveRequestTypes' => collect(LeaveRequestType::ALL)
                 ->mapWithKeys(fn (string $v) => [$v => __('leaveRequest.type.' . $v)]),
             'leaveRequestStatuses' => collect(LeaveRequestStatus::ALL)
                 ->mapWithKeys(fn (string $v) => [$v => __('leaveRequest.status.' . $v)]),
             'leaveRequestAdminFilters' => auth()->user()?->hasRole(RoleType::ADMIN) ?? false,
+            'leaveRequestStats' => [
+                'total' => $total,
+                'pending' => $pending,
+                'approved' => $approved,
+                'rejected' => $rejected,
+            ],
         ]);
+    }
+
+    protected function scopedLeaveRequestsQuery(): Builder
+    {
+        $query = LeaveRequest::query();
+        if (!(auth()->user()?->hasRole(RoleType::ADMIN) ?? false)) {
+            $query->where('user_id', auth()->id());
+        }
+
+        return $query;
     }
 
     public function getListData(LeaveRequestSearchRequest $request): array

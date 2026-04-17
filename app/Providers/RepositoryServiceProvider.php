@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Contracts\Article\IArticleRepository;
 use App\Contracts\Attendance\IAttendanceRepository;
 use App\Contracts\Candidate\ICandidateRepository;
 use App\Contracts\Department\IDepartmentRepository;
@@ -24,7 +23,6 @@ use App\Contracts\Task\ITaskRepository;
 use App\Contracts\Timesheet\ITimesheetRepository;
 use App\Contracts\User\IUserRepository;
 use App\Contracts\Vacancy\IVacancyRepository;
-use App\Repositories\Article\ArticleRepository;
 use App\Repositories\Attendance\AttendanceRepository;
 use App\Repositories\Candidate\CandidateRepository;
 use App\Repositories\Department\DepartmentRepository;
@@ -57,7 +55,6 @@ class RepositoryServiceProvider extends ServiceProvider
         IUserRepository::class => UserRepository::class,
         IRoleRepository::class => RoleRepository::class,
         IFileRepository::class => FileRepository::class,
-        IArticleRepository::class => ArticleRepository::class,
         IDepartmentRepository::class => DepartmentRepository::class,
         IPositionRepository::class => PositionRepository::class,
         ISkillRepository::class => SkillRepository::class,

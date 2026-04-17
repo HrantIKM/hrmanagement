@@ -14,6 +14,7 @@ use App\Models\Task\Task;
 use App\Models\Task\TaskSearch;
 use App\Services\Task\TaskService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -33,15 +34,37 @@ class TaskController extends BaseController
 
     public function index(): View
     {
+        $base = $this->scopedTasksQuery();
+        $total = (clone $base)->count();
+        $done = (clone $base)->where('status', TaskStatus::DONE)->count();
+        $open = (clone $base)->where('status', '!=', TaskStatus::DONE)->count();
+        $overdue = (clone $base)
+            ->whereNotNull('due_date')
+            ->whereDate('due_date', '<', now()->toDateString())
+            ->where('status', '!=', TaskStatus::DONE)
+            ->count();
+
         return $this->dashboardView('task.index', [
             'projects' => $this->projectRepository->getForSelect(),
             'users' => $this->userRepository->getForSelect(),
             'taskPriorities' => collect(TaskPriority::ALL)
-                ->mapWithKeys(fn(string $v) => [$v => __('task.priority.' . $v)]),
+                ->mapWithKeys(fn (string $v) => [$v => __('task.priority.' . $v)]),
             'taskStatuses' => collect(TaskStatus::ALL)
-                ->mapWithKeys(fn(string $v) => [$v => __('task.status.' . $v)]),
+                ->mapWithKeys(fn (string $v) => [$v => __('task.status.' . $v)]),
             'createRoute' => $this->dashboardUserIsAdmin() ? route('dashboard.tasks.create') : null,
+            'boardRoute' => route('dashboard.tasks.board'),
+            'taskStats' => [
+                'total' => $total,
+                'open' => $open,
+                'done' => $done,
+                'overdue' => $overdue,
+            ],
         ]);
+    }
+
+    protected function scopedTasksQuery(): Builder
+    {
+        return Task::query();
     }
 
     public function getListData(TaskSearchRequest $request): array
@@ -78,8 +101,6 @@ class TaskController extends BaseController
 
     public function show(Task $task): View
     {
-        $this->abortUnlessAdminOrOwnsUserId($task->user_id);
-
         return $this->dashboardView(
             view: 'task.show',
             vars: $this->service->getIssueViewData($task->id)
@@ -96,19 +117,36 @@ class TaskController extends BaseController
                 TaskStatus::READY_TO_TEST,
                 TaskStatus::DONE,
             ],
+            'canAdminManage' => $this->dashboardUserIsAdmin(),
         ]);
     }
 
     public function boardData(): JsonResponse
     {
+        $authId = (int) auth()->id();
+        $isAdmin = $this->dashboardUserIsAdmin();
         $query = Task::with(['project:id,name', 'user:id,first_name,last_name,email'])
-            ->select(['id', 'title', 'status', 'priority', 'project_id', 'user_id', 'due_date']);
+            ->select(['id', 'title', 'description', 'status', 'priority', 'project_id', 'user_id', 'due_date']);
 
-        if (!$this->dashboardUserIsAdmin()) {
-            $query->where('user_id', auth()->id());
-        }
+        $tasks = $query->orderBy('id')->get()->map(function (Task $task) use ($authId, $isAdmin) {
+            return [
+                'id' => $task->id,
+                'title' => $task->title,
+                'description' => $task->description,
+                'status' => $task->status,
+                'status_display' => $task->status_display,
+                'priority' => $task->priority,
+                'priority_display' => $task->priority_display,
+                'project' => $task->project ? ['id' => $task->project->id, 'name' => $task->project->name] : null,
+                'user' => $task->user ? ['id' => $task->user->id, 'name' => $task->user->name] : null,
+                'due_date' => $task->due_date?->format('Y-m-d'),
+                'can_manage_status' => $isAdmin || (int) $task->user_id === $authId,
+                'can_edit' => $isAdmin || (int) $task->user_id === $authId,
+                'can_delete' => $isAdmin,
+            ];
+        })->values();
 
-        return response()->json($query->orderBy('id')->get());
+        return response()->json($tasks);
     }
 
     public function move(Request $request, Task $task): JsonResponse
@@ -130,7 +168,7 @@ class TaskController extends BaseController
 
     public function edit(Task $task): View
     {
-        $this->abortUnlessAdminCanManageHrRecords();
+        $this->abortUnlessAdminOrOwnsUserId($task->user_id);
 
         return $this->dashboardView(
             view: 'task.form',
@@ -141,7 +179,15 @@ class TaskController extends BaseController
 
     public function update(TaskRequest $request, Task $task): JsonResponse
     {
-        $this->service->createOrUpdate($request->validated(), $task->id);
+        if (!$this->dashboardUserIsAdmin()) {
+            $this->abortUnlessAdminOrOwnsUserId($task->user_id);
+            $data = $request->validated();
+            $data['user_id'] = $task->user_id;
+            $data['project_id'] = $task->project_id;
+            $this->service->createOrUpdate($data, $task->id);
+        } else {
+            $this->service->createOrUpdate($request->validated(), $task->id);
+        }
 
         return $this->sendOkUpdated([
             'redirectUrl' => route('dashboard.tasks.index'),

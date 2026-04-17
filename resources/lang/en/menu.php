@@ -18,6 +18,7 @@ return [
     'reviews-mine' => 'My performance feedback',
     'meetings' => 'Meetings',
     'meetings-calendar' => 'Meeting Calendar',
+    'messages' => 'Messages',
     'notifications' => 'Notifications',
     'leave-requests' => 'Leave Requests',
     'leave-balances' => 'Leave Balances',
@@ -25,7 +26,5 @@ return [
     'salaries' => 'Salaries',
     'payslips' => 'Payslips (HR)',
     'payslips-mine' => 'My payslips',
-    'articles' => 'Articles',
     'translation-manager' => 'Translation Manager',
-    'vue-example' => 'Vue Example',
 ];

@@ -1,3 +1,5 @@
+const isAdmin = typeof window.$is === 'function' && window.$is('admin');
+
 const options = {
   pathOptions: {
     searchPath: route('dashboard.leave-balances.getListData'),
@@ -20,9 +22,14 @@ const options = {
     },
   },
 
-  actions: {
-      show: true,
-  },
+  actions: isAdmin
+    ? { show: true }
+    : {
+        show: true,
+        edit: false,
+        delete: false,
+        clone: false,
+      },
 };
 // eslint-disable-next-line no-new,no-undef
 new DataTable(options);

@@ -1,0 +1,119 @@
+.leave-requests-page {
+  --lr-border: rgba(148, 163, 184, 0.25);
+}
+
+.leave-requests-hero {
+  border-radius: 14px;
+  padding: 1.15rem 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  color: #fff;
+  background: linear-gradient(120deg, #0f172a 0%, #0e7490 40%, #2dd4bf 100%);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.2);
+}
+
+.leave-requests-hero__title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.leave-requests-hero__subtitle {
+  opacity: 0.93;
+  max-width: 40rem;
+}
+
+.leave-requests-hero__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(96px, 1fr));
+  gap: 0.5rem;
+}
+
+.leave-requests-hero__stat {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 10px;
+  padding: 0.45rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+
+  .label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.88;
+  }
+
+  strong {
+    font-size: 1rem;
+    margin-top: 0.2rem;
+  }
+}
+
+.leave-requests-card {
+  border: 1px solid var(--lr-border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.leave-requests-page .datatable-search-collapse form {
+  border-radius: 12px;
+  border: 1px solid var(--lr-border);
+  background: linear-gradient(180deg, #ecfeff 0%, #fff 100%);
+  padding: 0.75rem 0.8rem;
+}
+
+.leave-date-cell {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.leave-date-cell__dow {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+}
+
+.leave-date-cell__main {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.status-pill--leave-vacation {
+  background: rgba(22, 163, 74, 0.12);
+  color: #166534;
+  border-color: rgba(22, 163, 74, 0.22);
+}
+
+.status-pill--leave-sick-leave {
+  background: rgba(234, 88, 12, 0.12);
+  color: #9a3412;
+  border-color: rgba(234, 88, 12, 0.25);
+}
+
+.status-pill--leave-day-off {
+  background: rgba(59, 130, 246, 0.14);
+  color: #1d4ed8;
+  border-color: rgba(59, 130, 246, 0.26);
+}
+
+@media (max-width: 991.98px) {
+  .leave-requests-hero__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .leave-requests-hero__stats {
+    grid-template-columns: 1fr;
+  }
+}

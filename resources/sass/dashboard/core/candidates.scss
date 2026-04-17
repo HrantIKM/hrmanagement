@@ -1,0 +1,74 @@
+.candidates-page {
+  --cand-border: rgba(148, 163, 184, 0.25);
+}
+
+.candidates-hero {
+  border-radius: 14px;
+  padding: 1.15rem 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  color: #fff;
+  background: linear-gradient(120deg, #0f172a 0%, #0f766e 45%, #14b8a6 100%);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.2);
+}
+
+.candidates-hero__title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.candidates-hero__subtitle {
+  opacity: 0.93;
+}
+
+.candidates-hero__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(110px, 1fr));
+  gap: 0.5rem;
+}
+
+.candidates-hero__stat {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 10px;
+  padding: 0.45rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+
+  .label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.88;
+  }
+
+  strong {
+    font-size: 1rem;
+    margin-top: 0.2rem;
+  }
+}
+
+.candidates-card {
+  border: 1px solid var(--cand-border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.candidates-page .datatable-search-collapse form {
+  border-radius: 12px;
+  border: 1px solid var(--cand-border);
+  background: linear-gradient(180deg, #f8fafc 0%, #fff 100%);
+  padding: 0.75rem 0.8rem;
+}
+
+@media (max-width: 767.98px) {
+  .candidates-hero__stats {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+}

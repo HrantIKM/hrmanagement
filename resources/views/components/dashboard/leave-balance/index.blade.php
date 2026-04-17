@@ -80,45 +80,43 @@
             </div>
         </div>
 
-        @if($leaveBalanceAdmin ?? false)
-            <div class="card mb-4">
-                <x-dashboard.layouts.partials.card-header
-                    :title="__('leaveBalance.admin_table_title')"
-                    :createRoute="$createRoute"
-                />
+        <div class="card mb-4">
+            <x-dashboard.layouts.partials.card-header
+                :title="$leaveBalanceAdmin ? __('leaveBalance.admin_table_title') : __('leaveBalance.employee_table_title')"
+                :createRoute="$createRoute"
+            />
 
-                <div class="card-body">
-                    <x-dashboard.datatable._filters_form>
-                        <div class="col-md-4 form-group">
-                            <x-dashboard.form._input name="id" type="number"/>
-                        </div>
+            <div class="card-body">
+                <x-dashboard.datatable._filters_form>
+                    @if($leaveBalanceAdmin ?? false)
+                    <div class="col-md-4 form-group">
+                        <x-dashboard.form._input name="id" type="number"/>
+                    </div>
 
-                        <div class="col-md-4 form-group">
-                            <x-dashboard.form._input name="user_id" type="number"/>
-                        </div>
+                    <div class="col-md-4 form-group">
+                        <x-dashboard.form._input name="user_id" type="number"/>
+                    </div>
+                    @endif
 
-                        <div class="col-md-4 form-group">
-                            <x-dashboard.form._input name="year" type="number"/>
-                        </div>
-                    </x-dashboard.datatable._filters_form>
+                    <div class="col-md-4 form-group">
+                        <x-dashboard.form._input name="year" type="number"/>
+                    </div>
+                </x-dashboard.datatable._filters_form>
 
-                    <x-dashboard.datatable._table>
-                        <th data-key="id">{{ __('label.id') }}</th>
-                        <th data-key="user_id">{{ __('label.user') }}</th>
-                        <th data-key="year">{{ __('label.year') }}</th>
-                        <th data-key="total_days">{{ __('label.total_days') }}</th>
-                        <th data-key="used_days">{{ __('label.used_days') }}</th>
-                        <th data-key="remaining_days" data-orderable="false">{{ __('label.remaining_days') }}</th>
-                        <th class="text-center">{{ __('label.actions') }}</th>
-                    </x-dashboard.datatable._table>
-                </div>
+                <x-dashboard.datatable._table>
+                    <th data-key="id">{{ __('label.id') }}</th>
+                    <th data-key="user_id" data-orderable="false">{{ __('label.user') }}</th>
+                    <th data-key="year">{{ __('label.year') }}</th>
+                    <th data-key="total_days">{{ __('label.total_days') }}</th>
+                    <th data-key="used_days">{{ __('label.used_days') }}</th>
+                    <th data-key="remaining_days" data-orderable="false">{{ __('label.remaining_days') }}</th>
+                    <th class="text-center">{{ __('label.actions') }}</th>
+                </x-dashboard.datatable._table>
             </div>
-        @endif
+        </div>
     </div>
 
-    @if($leaveBalanceAdmin ?? false)
-        <x-slot name="scripts">
-            <script src="{{ asset('/js/dashboard/leave-balance/index.js') }}"></script>
-        </x-slot>
-    @endif
+    <x-slot name="scripts">
+        <script src="{{ asset('/js/dashboard/leave-balance/index.js') }}"></script>
+    </x-slot>
 </x-dashboard.layouts.app>

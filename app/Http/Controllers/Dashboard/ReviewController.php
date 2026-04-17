@@ -31,8 +31,20 @@ class ReviewController extends BaseController
             return redirect()->route('dashboard.reviews.mine');
         }
 
+        $total = Review::count();
+        $avgRating = Review::query()->avg('rating');
+        $avgRating = $avgRating !== null ? round((float) $avgRating, 2) : null;
+        $employeesReviewed = (int) Review::query()->selectRaw('COUNT(DISTINCT user_id) as aggregate')->value('aggregate');
+        $last30Days = Review::where('created_at', '>=', now()->subDays(30))->count();
+
         return $this->dashboardView('review.index', array_merge($this->service->getIndexViewData(), [
             'createRoute' => route('dashboard.reviews.create'),
+            'reviewStats' => [
+                'total' => $total,
+                'avg_rating' => $avgRating,
+                'employees' => $employeesReviewed,
+                'last_30d' => $last30Days,
+            ],
         ]));
     }
 
@@ -48,10 +60,12 @@ class ReviewController extends BaseController
             ->get();
 
         $avg = $reviews->avg('rating');
+        $thisYear = Review::where('user_id', $userId)->whereYear('created_at', now()->year)->count();
         $stats = [
             'count' => $reviews->count(),
             'avg_rating' => $avg !== null ? round((float) $avg, 2) : null,
             'latest_at' => $reviews->first()?->created_at,
+            'this_year' => $thisYear,
         ];
 
         return $this->dashboardView('review.my-index', array_merge($this->service->getIndexViewData(), [

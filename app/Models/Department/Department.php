@@ -20,6 +20,7 @@ class Department extends BaseModel
     protected $fillable = [
         'name',
         'description',
+        'parent_id',
     ];
 
     public function setFileConfigName(): string

@@ -19,7 +19,10 @@ function userTableAvatarCell(row) {
   return `<a href="${showHref}" class="d-inline-flex align-items-center justify-content-center rounded-circle text-white text-decoration-none" style="width:${size}px;height:${size}px;background:hsl(${hue},52%,42%);font-size:${Math.round(size * 0.38)}px;font-weight:600" title="${titleAttr}">${initials}</a>`;
 }
 
+const isAdmin = typeof window.$is === 'function' && window.$is('admin');
+
 const options = {
+  order: [[1, 'desc']],
   pathOptions: {
     searchPath: route('dashboard.users.getListData'),
     deletePath: route('dashboard.users.destroy', ':id'),
@@ -41,7 +44,14 @@ const options = {
     },
   },
 
-  actions: {},
+  actions: isAdmin
+    ? {}
+    : {
+        show: true,
+        edit: false,
+        delete: false,
+        clone: false,
+      },
 };
 // eslint-disable-next-line no-new,no-undef
 new DataTable(options);

@@ -1,24 +1,49 @@
 <x-dashboard.layouts.app>
-    <div class="container-fluid">
-        <div class="card mb-4">
+    <div class="container-fluid goals-page">
+        <section class="goals-hero mb-4">
+            <div>
+                <h2 class="goals-hero__title mb-1">{{ __('goal.index.hero_title') }}</h2>
+                <p class="goals-hero__subtitle mb-0">{{ __('goal.index.hero_subtitle') }}</p>
+            </div>
+            <div class="goals-hero__stats">
+                <div class="goals-hero__stat">
+                    <span class="label">{{ __('goal.index.stat_total') }}</span>
+                    <strong>{{ $goalStats['total'] }}</strong>
+                </div>
+                <div class="goals-hero__stat">
+                    <span class="label">{{ __('goal.index.stat_avg_progress') }}</span>
+                    <strong>{{ $goalStats['avg_progress'] !== null ? $goalStats['avg_progress'] . '%' : '—' }}</strong>
+                </div>
+                <div class="goals-hero__stat">
+                    <span class="label">{{ __('goal.index.stat_achieved') }}</span>
+                    <strong>{{ $goalStats['achieved'] }}</strong>
+                </div>
+                <div class="goals-hero__stat">
+                    <span class="label">{{ __('goal.index.stat_overdue') }}</span>
+                    <strong>{{ $goalStats['overdue'] }}</strong>
+                </div>
+            </div>
+        </section>
+
+        <div class="card mb-4 goals-card">
             <x-dashboard.layouts.partials.card-header :createRoute="$createRoute"/>
 
             <div class="card-body">
                 <x-dashboard.datatable._filters_form>
-                    <div class="col-md-4 col-lg-2 form-group">
+                    <div class="col-md-3 form-group">
                         <x-dashboard.form._input name="id" type="number"/>
                     </div>
 
-                    <div class="col-md-4 col-lg-2 form-group">
+                    <div class="col-md-3 form-group">
                         <x-dashboard.form._input name="title"/>
                     </div>
 
-                    <div class="col-md-4 col-lg-2 form-group">
+                    <div class="col-md-3 form-group">
                         <x-dashboard.form._select name="user_id" allowClear defaultOption
                                                   :data="$users" class="select2"/>
                     </div>
 
-                    <div class="col-md-4 col-lg-2 form-group">
+                    <div class="col-md-3 form-group">
                         <x-dashboard.form._select name="type" allowClear defaultOption
                                                   :data="$goalTypeOptions" class="select2"/>
                     </div>

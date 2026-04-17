@@ -1,0 +1,125 @@
+.attendance-page {
+  --att-accent: #3b82f6;
+  --att-border: rgba(148, 163, 184, 0.25);
+}
+
+.attendance-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  padding: 1.15rem 1.2rem;
+  border-radius: 14px;
+  color: #fff;
+  background: linear-gradient(120deg, #0f172a 0%, #1e3a8a 50%, #3b82f6 100%);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.2);
+}
+
+.attendance-hero__title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.attendance-hero__subtitle {
+  opacity: 0.92;
+}
+
+.attendance-hero__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.attendance-hero__status-meta {
+  font-size: 0.78rem;
+  opacity: 0.92;
+}
+
+.attendance-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.attendance-hero__btn {
+  border-radius: 10px;
+  font-weight: 600;
+  min-width: 6rem;
+}
+
+.attendance-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 36%) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.attendance-card {
+  border: 1px solid var(--att-border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.attendance-card__head {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--att-border);
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+
+.attendance-card__hint {
+  margin-top: 0.35rem;
+  color: #64748b;
+  font-size: 0.77rem;
+  line-height: 1.35;
+}
+
+#attendance-calendar {
+  min-height: 520px;
+}
+
+#attendance-calendar .fc {
+  --fc-border-color: rgba(148, 163, 184, 0.28);
+  --fc-page-bg-color: #fff;
+  --fc-neutral-bg-color: #f8fafc;
+  --fc-today-bg-color: rgba(59, 130, 246, 0.12);
+  --fc-button-bg-color: #2563eb;
+  --fc-button-border-color: #2563eb;
+  --fc-button-hover-bg-color: #1d4ed8;
+  --fc-button-hover-border-color: #1d4ed8;
+}
+
+#attendance-calendar .fc-toolbar-title {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+#attendance-calendar .fc-event {
+  border: none;
+  border-radius: 8px;
+  padding: 2px 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.attendance-layout .datatable-search-collapse form {
+  border-radius: 12px;
+  border: 1px solid var(--att-border);
+  background: linear-gradient(180deg, #f8fafc 0%, #fff 100%);
+  padding: 0.75rem 0.8rem;
+}
+
+.attendance-layout .dt__table thead th {
+  white-space: nowrap;
+}
+
+@media (max-width: 1199.98px) {
+  .attendance-layout {
+    grid-template-columns: 1fr;
+  }
+
+  #attendance-calendar {
+    min-height: 460px;
+  }
+}

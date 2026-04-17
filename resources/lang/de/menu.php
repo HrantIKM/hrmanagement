@@ -14,7 +14,5 @@ return [
     'reviews' => 'Reviews',
     'salaries' => 'Salaries',
     'payslips' => 'Payslips',
-    'articles' => 'Articles',
     'translation-manager' => 'Translation Manager',
-    'vue-example' => 'Vue Example',
 ];

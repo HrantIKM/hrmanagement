@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Dashboard\Concerns\AuthorizesDashboardEmployeeAccess;
 use App\Http\Requests\Holiday\HolidayRequest;
 use App\Http\Requests\Holiday\HolidaySearchRequest;
 use App\Models\Holiday\HolidaySearch;
@@ -13,6 +14,8 @@ use Illuminate\Contracts\View\View;
 
 class HolidayController extends BaseController
 {
+    use AuthorizesDashboardEmployeeAccess;
+
     public function __construct(
         HolidayService $service,
         IHolidayRepository $repository
@@ -23,8 +26,19 @@ class HolidayController extends BaseController
 
     public function index(): View
     {
+        $total = Holiday::count();
+        $upcoming = Holiday::whereDate('date', '>=', now()->toDateString())->count();
+        $publicCount = Holiday::where('is_public', true)->count();
+        $thisYear = Holiday::whereYear('date', now()->year)->count();
+
         return $this->dashboardView('holiday.index', [
-            'createRoute' => route('dashboard.holidays.create'),
+            'createRoute' => $this->dashboardUserIsAdmin() ? route('dashboard.holidays.create') : null,
+            'holidayStats' => [
+                'total' => $total,
+                'upcoming' => $upcoming,
+                'public' => $publicCount,
+                'this_year' => $thisYear,
+            ],
         ]);
     }
 
@@ -41,6 +55,8 @@ class HolidayController extends BaseController
 
     public function create(): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'holiday.form',
             vars: $this->service->getViewData()
@@ -49,6 +65,8 @@ class HolidayController extends BaseController
 
     public function store(HolidayRequest $request): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated());
 
         return $this->sendOkCreated([
@@ -67,6 +85,8 @@ class HolidayController extends BaseController
 
     public function edit(Holiday $holiday): View
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         return $this->dashboardView(
             view: 'holiday.form',
             vars: $this->service->getViewData($holiday->id),
@@ -76,6 +96,8 @@ class HolidayController extends BaseController
 
     public function update(HolidayRequest $request, Holiday $holiday): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         $this->service->createOrUpdate($request->validated(), $holiday->id);
 
         return $this->sendOkUpdated([
@@ -85,6 +107,8 @@ class HolidayController extends BaseController
 
     public function destroy(Holiday $holiday): JsonResponse
     {
+        $this->abortUnlessAdminCanManageHrRecords();
+
         // If deleting other data except model use service
         // $this->service->delete($holiday->id);
         $this->repository->destroy($holiday->id);

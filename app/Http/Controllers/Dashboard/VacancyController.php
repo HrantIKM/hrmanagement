@@ -26,10 +26,26 @@ class VacancyController extends BaseController
 
     public function index(): View
     {
+        $total = Vacancy::count();
+        $open = Vacancy::where('status', VacancyStatus::OPEN)->count();
+        $closed = Vacancy::where('status', VacancyStatus::CLOSED)->count();
+        $closingSoon = Vacancy::where('status', VacancyStatus::OPEN)
+            ->whereNotNull('closing_date')
+            ->whereDate('closing_date', '>=', now()->toDateString())
+            ->whereDate('closing_date', '<=', now()->addDays(14)->toDateString())
+            ->count();
+
         return $this->dashboardView('vacancy.index', [
             'positions' => $this->positionRepository->getForSelect(),
             'vacancyStatuses' => collect(VacancyStatus::ALL)
                 ->mapWithKeys(fn (string $v) => [$v => __('vacancy.status.' . $v)]),
+            'createRoute' => route('dashboard.vacancies.create'),
+            'vacancyStats' => [
+                'total' => $total,
+                'open' => $open,
+                'closed' => $closed,
+                'closing_soon' => $closingSoon,
+            ],
         ]);
     }
 

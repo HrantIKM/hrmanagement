@@ -33,7 +33,7 @@ class MenuSeeder extends Seeder
                 'url' => route('dashboard.users.index', [], false),
                 'icon' => 'fas fa-users fa-fw',
                 'type' => 'admin',
-                'role' => [RoleType::ADMIN],
+                'role' => [RoleType::ADMIN, RoleType::USER],
             ],
             [
                 'title' => 'Departments',
@@ -41,7 +41,7 @@ class MenuSeeder extends Seeder
                 'url' => route('dashboard.departments.index', [], false),
                 'icon' => 'fas fa-sitemap fa-fw',
                 'type' => 'admin',
-                'role' => [RoleType::ADMIN],
+                'role' => [RoleType::ADMIN, RoleType::USER],
             ],
             [
                 'title' => 'Positions',
@@ -57,7 +57,7 @@ class MenuSeeder extends Seeder
                 'url' => route('dashboard.skills.index', [], false),
                 'icon' => 'fas fa-award fa-fw',
                 'type' => 'admin',
-                'role' => [RoleType::ADMIN],
+                'role' => [RoleType::ADMIN, RoleType::USER],
             ],
             [
                 'title' => 'Holidays',
@@ -65,7 +65,7 @@ class MenuSeeder extends Seeder
                 'url' => route('dashboard.holidays.index', [], false),
                 'icon' => 'fas fa-calendar-day fa-fw',
                 'type' => 'admin',
-                'role' => [RoleType::ADMIN],
+                'role' => [RoleType::ADMIN, RoleType::USER],
             ],
             [
                 'title' => 'Rooms',
@@ -73,7 +73,7 @@ class MenuSeeder extends Seeder
                 'url' => route('dashboard.rooms.index', [], false),
                 'icon' => 'fas fa-building fa-fw',
                 'type' => 'admin',
-                'role' => [RoleType::ADMIN],
+                'role' => [RoleType::ADMIN, RoleType::USER],
             ],
             [
                 'title' => 'Vacancies',
@@ -164,6 +164,14 @@ class MenuSeeder extends Seeder
                 'role' => [RoleType::ADMIN, RoleType::USER],
             ],
             [
+                'title' => 'Messages',
+                'slug' => 'messages',
+                'url' => route('dashboard.messages.index', [], false),
+                'icon' => 'fas fa-comments fa-fw',
+                'type' => 'admin',
+                'role' => [RoleType::ADMIN, RoleType::USER],
+            ],
+            [
                 'title' => 'Notifications',
                 'slug' => 'notifications',
                 'url' => route('dashboard.notifications.index', [], false),
@@ -201,7 +209,7 @@ class MenuSeeder extends Seeder
                 'url' => route('dashboard.salaries.index', [], false),
                 'icon' => 'fas fa-money-bill-wave fa-fw',
                 'type' => 'admin',
-                'role' => [RoleType::ADMIN],
+                'role' => [RoleType::ADMIN, RoleType::USER],
             ],
             [
                 'title' => 'My Payslips',
@@ -216,31 +224,6 @@ class MenuSeeder extends Seeder
                 'slug' => 'payslips',
                 'url' => route('dashboard.payslips.index', [], false),
                 'icon' => 'fas fa-file-invoice-dollar fa-fw',
-                'type' => 'admin',
-                'role' => [RoleType::ADMIN],
-            ],
-            [
-                'title' => 'Articles',
-                'slug' => 'articles',
-                'url' => route('dashboard.articles.index', [], false),
-                'icon' => 'far fa-newspaper fa-fw',
-                'type' => 'admin',
-                'role' => [RoleType::ADMIN, RoleType::USER],
-                /*'sub' =>  [
-                    [
-                        'title' => 'Sub Article',
-                        'slug' => 'sub_articles',
-                        'url' => route('dashboard.articles.index', [], false),
-                        'type' => 'admin',
-                        'role' => [RoleType::ADMIN]
-                    ]
-                ],*/
-            ],
-            [
-                'title' => 'Vue3',
-                'slug' => 'vue-example',
-                'url' => route('dashboard.vue-example.index', [], false),
-                'icon' => 'fab fa-vuejs',
                 'type' => 'admin',
                 'role' => [RoleType::ADMIN],
             ],

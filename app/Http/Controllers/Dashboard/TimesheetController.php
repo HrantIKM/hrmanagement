@@ -13,6 +13,7 @@ use App\Models\Timesheet\Timesheet;
 use App\Models\Timesheet\TimesheetSearch;
 use App\Services\Timesheet\TimesheetService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -32,10 +33,37 @@ class TimesheetController extends BaseController
 
     public function index(): View
     {
+        $base = $this->scopedTimesheetsQuery();
+        $total = (clone $base)->count();
+        $totalMinutes = (int) (clone $base)->sum('duration_minutes');
+        $hoursLogged = round($totalMinutes / 60, 1);
+        $thisMonth = (clone $base)
+            ->whereYear('date', now()->year)
+            ->whereMonth('date', now()->month)
+            ->count();
+        $tasksTouched = (int) (clone $base)->whereNotNull('task_id')->distinct()->count('task_id');
+
         return $this->dashboardView('timesheet.index', [
             'tasks' => $this->taskRepository->getForSelect(),
             'users' => $this->userRepository->getForSelect(),
+            'createRoute' => route('dashboard.timesheets.create'),
+            'timesheetStats' => [
+                'total' => $total,
+                'hours' => $hoursLogged,
+                'this_month' => $thisMonth,
+                'tasks_touched' => $tasksTouched,
+            ],
         ]);
+    }
+
+    protected function scopedTimesheetsQuery(): Builder
+    {
+        $query = Timesheet::query();
+        if (!$this->dashboardUserIsAdmin()) {
+            $query->where('user_id', auth()->id());
+        }
+
+        return $query;
     }
 
     public function getListData(TimesheetSearchRequest $request): array

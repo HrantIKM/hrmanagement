@@ -39,7 +39,7 @@ class LeaveBalanceSearch extends Search
             ->when(!empty($filters['id']), function ($query) use ($filters) {
                 $query->where('id', $filters['id']);
             })
-            ->when(!empty($filters['user_id']), function ($query) use ($filters) {
+            ->when(!empty($filters['user_id']) && $this->dashboardUserIsAdmin(), function ($query) use ($filters) {
                 $query->where('user_id', $filters['user_id']);
             })
             ->when(!empty($filters['year']), function ($query) use ($filters) {

@@ -2,14 +2,12 @@
 
 namespace App\Models\Task;
 
-use App\Models\Base\Concerns\ScopesEmployeeOwnedDataTable;
 use App\Models\Base\Search;
+use App\Models\RoleAndPermission\Enums\RoleType;
 use Illuminate\Database\Eloquent\Builder;
 
 class TaskSearch extends Search
 {
-    use ScopesEmployeeOwnedDataTable;
-
     protected array $orderables = [
         'id',
         'title',
@@ -57,6 +55,19 @@ class TaskSearch extends Search
 
     public function totalCount(): int
     {
-        return $this->assigneeScopedTotalCount(Task::class);
+        return Task::query()->count();
+    }
+
+    public function setReturnData(Builder $query): mixed
+    {
+        $rows = $query->get();
+        $isAdmin = auth()->user()?->hasRole(RoleType::ADMIN) ?? false;
+        $authId = (int) auth()->id();
+        foreach ($rows as $task) {
+            $task->setAttribute('can_edit', $isAdmin || (int) $task->user_id === $authId);
+            $task->setAttribute('can_delete', $isAdmin);
+        }
+
+        return $rows;
     }
 }
