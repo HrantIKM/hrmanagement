@@ -2,12 +2,15 @@
 
 @section('content')
     <div class="container py-5 careers-page">
+        <div class="career-cover mb-4">
+            <img src="https://images.unsplash.com/photo-1497215842964-222b430dc094?auto=format&fit=crop&w=1600&q=80" alt="{{ __('front.careers.title') }}" loading="lazy">
+        </div>
         <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-3">
             <div>
-                <h1 class="mb-1">Careers</h1>
-                <p class="text-light-emphasis mb-0">Join our team. Apply to active opportunities below.</p>
+                <h1 class="mb-1">{{ __('front.careers.title') }}</h1>
+                <p class="text-light-emphasis mb-0">{{ __('front.careers.subtitle') }}</p>
             </div>
-            <a href="{{ route('login') }}" class="btn btn-outline-light">Employee Login</a>
+            <a href="{{ route('login') }}" class="btn btn-front-ghost">{{ __('front.careers.employee_login') }}</a>
         </div>
 
         @if(session('success'))
@@ -19,48 +22,48 @@
                 <div class="row g-3">
                     @forelse($vacancies as $vacancy)
                         <div class="col-12">
-                            <article class="career-card">
-                                <div class="d-flex justify-content-between align-items-start mb-2 gap-3">
+                            <article class="career-card h-100">
+                                <div class="d-flex justify-content-between align-items-start mb-3 gap-3">
                                     <div>
-                                        <h5 class="mb-1">
-                                            <a href="{{ route('careers.show', $vacancy->id) }}" class="text-decoration-none text-light">
+                                        <h5 class="mb-2">
+                                            <a href="{{ route('careers.show', $vacancy->id) }}" class="career-title-link">
                                                 {{ $vacancy->title }}
                                             </a>
                                         </h5>
                                         <div class="small text-light-emphasis">
-                                            {{ $vacancy->position?->title ?? 'General' }}
+                                            {{ $vacancy->position?->title ?? __('front.careers.general') }}
                                             @if($vacancy->closing_date)
-                                                | Closes {{ $vacancy->closing_date->format('Y-m-d') }}
+                                                | {{ __('front.careers.closes') }} {{ $vacancy->closing_date->format('Y-m-d') }}
                                             @endif
                                         </div>
                                     </div>
-                                    <span class="badge rounded-pill bg-success-subtle text-success-emphasis">Open</span>
+                                    <span class="badge rounded-pill bg-success-subtle text-success-emphasis">{{ __('front.careers.open') }}</span>
                                 </div>
-                                <p class="mb-2">{{ $vacancy->description }}</p>
+                                <p class="mb-3 career-description">{{ $vacancy->description }}</p>
                                 <div class="d-flex flex-wrap gap-2">
                                     @foreach($vacancy->skills as $skill)
-                                        <span class="badge text-bg-secondary">{{ $skill->name }}</span>
+                                        <span class="badge rounded-pill front-tag">{{ $skill->name }}</span>
                                     @endforeach
                                 </div>
                             </article>
                         </div>
                     @empty
                         <div class="col-12">
-                            <div class="alert alert-info border-0 shadow-sm mb-0">No open opportunities at the moment.</div>
+                            <div class="alert alert-info border-0 shadow-sm mb-0">{{ __('front.careers.no_open') }}</div>
                         </div>
                     @endforelse
                 </div>
             </div>
 
             <div class="col-lg-5">
-                <div class="apply-panel">
-                    <h4 class="mb-3">Apply Now</h4>
+                <div class="apply-panel sticky-lg-top">
+                    <h4 class="mb-3">{{ __('front.careers.apply_now') }}</h4>
                     <form method="POST" action="{{ route('careers.apply') }}" enctype="multipart/form-data" id="career-apply-form">
                         @csrf
                         <div class="mb-3">
-                            <label class="form-label">Opportunity</label>
+                            <label class="form-label">{{ __('front.careers.opportunity') }}</label>
                             <select name="vacancy_id" class="form-select @error('vacancy_id') is-invalid @enderror" required>
-                                <option value="">Select vacancy</option>
+                                <option value="">{{ __('front.careers.select_vacancy') }}</option>
                                 @foreach($vacancies as $vacancy)
                                     <option value="{{ $vacancy->id }}" @selected(old('vacancy_id') == $vacancy->id)>{{ $vacancy->title }}</option>
                                 @endforeach
@@ -69,32 +72,32 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Full Name</label>
+                            <label class="form-label">{{ __('front.careers.full_name') }}</label>
                             <input type="text" name="full_name" value="{{ old('full_name') }}"
                                    class="form-control @error('full_name') is-invalid @enderror" required>
                             @error('full_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">{{ __('front.careers.email') }}</label>
                             <input type="email" name="email" value="{{ old('email') }}"
                                    class="form-control @error('email') is-invalid @enderror" required>
                             @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Resume (PDF)</label>
+                            <label class="form-label">{{ __('front.careers.resume_pdf') }}</label>
                             <input type="file" id="resume-input" name="resume" accept=".pdf,application/pdf"
                                    class="d-none @error('resume') is-invalid @enderror" required>
                             <div id="resume-drop-zone" class="resume-drop-zone">
-                                <div class="fw-semibold mb-1">Drag & drop your PDF here</div>
-                                <div class="small text-light-emphasis">or click to browse</div>
+                                <div class="fw-semibold mb-1">{{ __('front.careers.drag_drop') }}</div>
+                                <div class="small text-light-emphasis">{{ __('front.careers.or_browse') }}</div>
                                 <div id="resume-file-name" class="small mt-2 text-info"></div>
                             </div>
                             @error('resume')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100">Submit Application</button>
+                        <button type="submit" class="btn btn-front-primary w-100">{{ __('front.careers.submit') }}</button>
                     </form>
                 </div>
             </div>
@@ -137,7 +140,7 @@
                 if (!file) return;
                 const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
                 if (!isPdf) {
-                    fileName.textContent = 'Only PDF files are accepted.';
+                    fileName.textContent = @json(__('front.careers.only_pdf'));
                     return;
                 }
 

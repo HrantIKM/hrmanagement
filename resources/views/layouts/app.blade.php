@@ -36,9 +36,10 @@
 </head>
 <body>
     <div id="app" class="front-shell">
-        <nav class="navbar navbar-expand-md navbar-dark front-navbar">
+        <nav class="navbar navbar-expand-md navbar-light front-navbar py-3">
             <div class="container">
-                <a class="navbar-brand fw-bold" href="{{ url('/') }}">
+                <a class="navbar-brand d-flex align-items-center gap-2 fw-semibold" href="{{ url('/') }}">
+                    <span class="brand-dot"></span>
                     {{ config('app.name', 'Manage Studio') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -52,15 +53,11 @@
                     </ul>
 
                     <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
+                    <ul class="navbar-nav ms-auto align-items-md-center gap-md-2">
                         <!-- Authentication Links -->
                         @guest
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('careers.index') }}">Careers</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                            </li>
+                            <li class="nav-item"><a class="nav-link px-3" href="{{ route('careers.index') }}">{{ __('front.nav.careers') }}</a></li>
+                            <li class="nav-item"><a class="btn btn-sm btn-front-primary ms-md-2" href="{{ route('login') }}">{{ __('front.nav.login') }}</a></li>
                         @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -80,6 +77,16 @@
                                 </div>
                             </li>
                         @endguest
+                        <li class="nav-item ms-md-3">
+                            <div class="locale-switch d-flex gap-1">
+                                @foreach(getSupportedLocales() as $locale)
+                                    <a href="{{ getCurrentAlternateHref($locale) }}"
+                                       class="locale-pill {{ app()->getLocale() === $locale ? 'active' : '' }}">
+                                        {{ strtoupper($locale) }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
